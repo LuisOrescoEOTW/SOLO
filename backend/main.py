@@ -538,32 +538,11 @@ def get_schema(tabla: str):
     return tabla_info["schema"]
 
 # Listar registros de una tabla (solo los no borrados lógicamente)
-
 @app.get("/{tabla}/")
 def listar_tabla(tabla: str, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
     model = get_model(tabla)
     crud = CRUDBase(model)
     return crud.get_all(db)
-
-# Relaciones genéricas
-@app.get("/{tabla}/relaciones/")
-def listar_relaciones(
-    tabla: str,
-    db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user)
-):
-    model = get_model(tabla)
-    query = db.query(model).filter(model.borrado == False)
-    options = get_options_con_relaciones(model)
-    if options:
-        query = query.options(*options)
-    return query.all()
-
-@app.get("/{tabla}/{campo}/{item_id}/campo/")
-def obtener_por_campo_y_id(tabla: str, campo: str, item_id: int, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
-    model = get_model(tabla)
-    crud = CRUDBase(model)
-    return crud.get_by_campo_y_id(db, campo, item_id)
 
 @app.get("/{tabla}/{item_id}/")
 def obtener_por_id(tabla: str, item_id: int, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
@@ -571,10 +550,25 @@ def obtener_por_id(tabla: str, item_id: int, db: Session = Depends(get_db), curr
     crud = CRUDBase(model)
     return crud.get_by_id(db, item_id)
 
+@app.get("/{tabla}/{campo}/{item_id}/campo/")
+def obtener_por_campo_y_id(tabla: str, campo: str, item_id: int, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+    model = get_model(tabla)
+    crud = CRUDBase(model)
+    return crud.get_by_campo_y_id(db, campo, item_id)
+
+# Relaciones genéricas
+@app.get("/{tabla}/relaciones/")
+def listar_relaciones(tabla: str, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+    model = get_model(tabla)
+    query = db.query(model).filter(model.borrado == False)
+    options = get_options_con_relaciones(model)
+    if options:
+        query = query.options(*options)
+    return query.all()
+
 @app.get("/{tabla}/{item_id}/relaciones/")
 def obtener_por_id_relaciones(tabla: str, item_id: int, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
     model = get_model(tabla)
-    crud = CRUDBase(model)
     query = db.query(model).filter(model.id == item_id, model.borrado == False)
     options = get_options_con_relaciones(model)
     if options:
@@ -584,6 +578,25 @@ def obtener_por_id_relaciones(tabla: str, item_id: int, db: Session = Depends(ge
         raise HTTPException(status_code=404, detail="Registro no encontrado")
     return result
 
+@app.get("/{tabla}/{campo}/{item_id}/campo/relaciones/")
+def obtener_por_campo_y_id_relaciones(tabla: str, campo: str, item_id: int,db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+    model = get_model(tabla)
+    if not hasattr(model, campo):
+        raise HTTPException(status_code=400, detail=f"El campo '{campo}' no existe en {tabla}")
+
+    query = db.query(model).filter(
+        getattr(model, campo) == item_id,
+        model.borrado == False
+    ).order_by(getattr(model, campo))
+    options = get_options_con_relaciones(model)
+    if options:
+        query = query.options(*options)
+    result = query.first()
+    if not result:
+        raise HTTPException(status_code=404, detail="No encontrado o eliminado")
+    return result
+
+# RESTO
 @app.post("/{tabla}/")
 def crear(tabla: str, registro: dict, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
     schema = get_schema(tabla)
@@ -611,9 +624,3 @@ def borrar_fisico(tabla: str, item_id: int, db: Session = Depends(get_db), curre
     model = get_model(tabla)
     crud = CRUDBase(model)
     return crud.delete(db, item_id)
-
-# Con Relaciones. Necesito saber el schema (response_model) para que me devuelva los datos relacionados.
-
-# @app.get("/{tabla}/relaciones/", response_model=list[schemas.Relacion])
-# def listar_relaciones(db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
-#     return db.query(models.Relacion).all()

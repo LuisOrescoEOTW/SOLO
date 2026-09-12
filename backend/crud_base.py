@@ -23,7 +23,7 @@ class CRUDBase:
 
    def create(self, db: Session, obj_in):
         try:
-            nuevo = self.model(**obj_in.dict(exclude_unset=True))
+            nuevo = self.model(**obj_in.model_dump(exclude_unset=True))
             db.add(nuevo)
             db.commit()
             db.refresh(nuevo)
@@ -38,7 +38,7 @@ class CRUDBase:
    def update(self, db: Session, id: int, obj_in):
         try:
             obj = self.get_by_id(db, id)
-            for key, value in obj_in.dict(exclude_unset=True).items():
+            for key, value in obj_in.model_dump(exclude_unset=True).items():
                 setattr(obj, key, value)
             db.commit()
             db.refresh(obj)
