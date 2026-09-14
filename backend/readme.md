@@ -22,6 +22,7 @@
 
 Agregar una tabla:
 
+- main: TABLAS (tiene todo lo generic)
+- crud_base: si tiene FK, RELACIONES_POR_TABLA.
 - schemas.py
 - modelos.py
-- main.py: agregarlo solo en TABLAS y tiene todo lo generic
