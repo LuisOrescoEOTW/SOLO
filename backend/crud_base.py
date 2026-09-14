@@ -9,17 +9,18 @@ class CRUDBase:
    def get_all(self, db: Session):
        return db.query(self.model).filter(self.model.borrado == False).all()
 
+   def get_by_id(self, db: Session, id: int):
+       obj = db.query(self.model).filter(self.model.id == id, self.model.borrado == False).first()
+       if not obj:
+           raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No encontrado o eliminado")
+       return obj
+   
    def get_by_campo_y_id(self, db: Session, campo: str, id: int):
        obj = db.query(self.model).filter(getattr(self.model, campo) == id, self.model.borrado == False).order_by(getattr(self.model, campo)).first()
        if not obj:
            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No encontrado o eliminado")
        return obj
 
-   def get_by_id(self, db: Session, id: int):
-       obj = db.query(self.model).filter(self.model.id == id, self.model.borrado == False).first()
-       if not obj:
-           raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No encontrado o eliminado")
-       return obj
 
    def create(self, db: Session, obj_in):
         try:

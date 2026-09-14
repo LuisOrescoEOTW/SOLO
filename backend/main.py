@@ -619,7 +619,7 @@ def borrar(tabla: str, item_id: int, db: Session = Depends(get_db), current_user
     crud = CRUDBase(model)
     return crud.logical_delete(db, item_id)
 
-@app.delete("/{tabla}/fisico/{item_id}/")
+@app.delete("/{tabla}/{item_id}/fisico/")
 def borrar_fisico(tabla: str, item_id: int, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
     model = get_model(tabla)
     crud = CRUDBase(model)
