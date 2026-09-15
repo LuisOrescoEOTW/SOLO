@@ -168,6 +168,7 @@ async def enviar_correo_aviso(registro: schemas.Aviso, background_tasks: Backgro
 
 # ==== ENDPOINTS GENERICOS ====
 
+# 1. LISTAS
 @app.get("/{tabla}/")
 def listar_tabla(tabla: str, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
     return CRUDBase(get_model(tabla)).get_all(db)
@@ -176,6 +177,7 @@ def listar_tabla(tabla: str, db: Session = Depends(get_db), current_user: dict =
 def listar_relaciones(tabla: str, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
     return CRUDBase(get_model(tabla)).get_all_relaciones(db)
 
+# 2. POR CAMPO
 @app.get("/{tabla}/{campo}/{item}/campo/relaciones/")
 def obtener_por_campo_y_id_relaciones(tabla: str, campo: str, item, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
     return CRUDBase(get_model(tabla)).get_by_campo_y_id_relaciones(db, campo, item)
@@ -184,27 +186,61 @@ def obtener_por_campo_y_id_relaciones(tabla: str, campo: str, item, db: Session 
 def obtener_por_campo_y_id(tabla: str, campo: str, item, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
     return CRUDBase(get_model(tabla)).get_by_campo_y_id(db, campo, item)
 
-@app.get("/{tabla}/{item_id}/")
-def obtener_por_id(tabla: str, item_id: int, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
-    return CRUDBase(get_model(tabla)).get_by_id(db, item_id)
+# 3. COMPUESTAS con relaciones (4 segmentos)
+@app.get("/{tabla}/{pk1}/{pk2}/relaciones/")
+def obtener_compuesto_rel(tabla: str, pk1: int, pk2: int, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+    if tabla not in ["selector_configuracion", "item_perfil"]:
+        raise HTTPException(404, "Esta ruta es solo para tablas con PK compuesta")
+    return CRUDBase(get_model(tabla)).get_by_composite(db, pk1, pk2, True)
 
+# 4. SIMPLE con relaciones (3 segmentos)
 @app.get("/{tabla}/{item_id}/relaciones/")
 def obtener_por_id_relaciones(tabla: str, item_id: int, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
     return CRUDBase(get_model(tabla)).get_by_id_relaciones(db, item_id)
 
-# ABM
+# 5. COMPUESTAS sin relaciones (3 segmentos)
+@app.get("/{tabla}/{pk1}/{pk2}/")
+def obtener_compuesto(tabla: str, pk1: int, pk2: int, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+    if tabla not in ["selector_configuracion", "item_perfil"]:
+        raise HTTPException(404, "Esta ruta es solo para tablas con PK compuesta")
+    return CRUDBase(get_model(tabla)).get_by_composite(db, pk1, pk2, False)
+
+# 6. SIMPLE sin relaciones (2 segmentos)
+@app.get("/{tabla}/{item_id}/")
+def obtener_por_id(tabla: str, item_id: int, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+    return CRUDBase(get_model(tabla)).get_by_id(db, item_id)
+
+# --- ABM ---
 @app.post("/{tabla}/")
 def crear(tabla: str, registro: dict, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
     return CRUDBase(get_model(tabla)).create(db, get_schema(tabla)(**registro))
+
+@app.put("/{tabla}/{pk1}/{pk2}/")
+def actualizar_compuesto(tabla: str, pk1: int, pk2: int, registro: dict, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+    if tabla not in ["selector_configuracion", "item_perfil"]:
+        raise HTTPException(404, "Esta ruta es solo para tablas con PK compuesta")
+    return CRUDBase(get_model(tabla)).update_composite(db, pk1, pk2, get_schema(tabla)(**registro))
 
 @app.put("/{tabla}/{item_id}/")
 def actualizar(tabla: str, item_id: int, registro: dict, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
     return CRUDBase(get_model(tabla)).update(db, item_id, get_schema(tabla)(**registro))
 
-@app.delete("/{tabla}/{item_id}/")
-def borrar(tabla: str, item_id: int, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
-    return CRUDBase(get_model(tabla)).logical_delete(db, item_id)
+@app.delete("/{tabla}/{pk1}/{pk2}/fisico/")
+def borrar_compuesto_fisico(tabla: str, pk1: int, pk2: int, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+    if tabla not in ["selector_configuracion", "item_perfil"]:
+        raise HTTPException(404, "Esta ruta es solo para tablas con PK compuesta")
+    return CRUDBase(get_model(tabla)).delete_composite(db, pk1, pk2)
 
 @app.delete("/{tabla}/{item_id}/fisico/")
 def borrar_fisico(tabla: str, item_id: int, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
     return CRUDBase(get_model(tabla)).delete(db, item_id)
+
+@app.delete("/{tabla}/{pk1}/{pk2}/")
+def borrar_compuesto(tabla: str, pk1: int, pk2: int, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+    if tabla not in ["selector_configuracion", "item_perfil"]:
+        raise HTTPException(404, "Esta ruta es solo para tablas con PK compuesta")
+    return CRUDBase(get_model(tabla)).logical_delete_composite(db, pk1, pk2)
+
+@app.delete("/{tabla}/{item_id}/")
+def borrar(tabla: str, item_id: int, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+    return CRUDBase(get_model(tabla)).logical_delete(db, item_id)

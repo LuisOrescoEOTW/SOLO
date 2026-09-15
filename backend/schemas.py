@@ -137,8 +137,8 @@ class Medicion(BaseModel):
    estado: float
    rango: float
    frecuencia: int
-   fecha_creacion: datetime
-   fecha_modificacion: datetime
+   fecha_creacion: Optional[datetime] = None
+   fecha_modificacion: Optional[datetime] = None
    borrado: bool | None = False
    canal: Optional[Canal] = None  # relación
    configuracion: Optional[Configuracion] = None  # relación
