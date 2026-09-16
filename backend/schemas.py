@@ -68,13 +68,11 @@ class UsuarioBase(BaseModel):
    telefono: str
    borrado: bool | None = False
    # foto: Optional[str] = None
-class UsuarioCreate(UsuarioBase):
-   password: str | None = None
+# class UsuarioCreate(UsuarioBase):
+#    password: str | None = None
 class UsuarioResponse(UsuarioBase):
    id: Optional[int] = None
    perfil: Optional[Perfil] = None  # relación
-   #  fechacreacion: datetime | None = None
-   #  fechamodificacion: datetime | None = None
 class LoginRequest(BaseModel):
    model_config = ConfigDict(from_attributes=True)
    email: EmailStr
@@ -89,7 +87,7 @@ class Usuario(BaseModel):
    perfil_id: int  # clave foránea
    nombre: str
    email: EmailStr
-   password: str
+   # password: str
    telefono: str
    intentos: int
    bloqueado: datetime | None = None

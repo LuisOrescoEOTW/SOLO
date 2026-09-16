@@ -5,8 +5,6 @@ export interface Ihabil {
   bloqueado?: Date | null;
   intentos?: number | 0; 
   vencimiento?: Date | null;
-  fechacreacion?: Date | null;
-  fechamodificacion?: Date | null;
   borrado?: boolean | false;
 }
 

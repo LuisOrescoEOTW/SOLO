@@ -17,7 +17,7 @@ import {
 import { post, put } from "../../redux/slices/thunks";
 import { actionCreatorMap } from "../../redux/actionCreatorMap";
 import type { Iperfil } from "../models/Iperfil";
-import type { Iperfilxsector } from "../models/Iperfilxsector";
+import type { Iperfilxsector } from "../models/Iitem_perfil";
 
 interface Props {
   open: boolean;

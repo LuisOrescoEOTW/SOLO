@@ -1,7 +1,6 @@
 export interface Iregister {
-  perfilid: number;
+  perfil_id: number;
   nombre: string;
   email: string;
   telefono: string;
-  password: string;
 }

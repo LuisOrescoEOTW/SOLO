@@ -63,7 +63,7 @@ def traer_items(perfil_id: int, db: Session):
     return [item.nombre for item in db.query(models.Item).join(models.Item_Perfil, models.Item.id == models.Item_Perfil.item_id).filter(models.Item_Perfil.perfil_id == perfil_id, models.Item_Perfil.borrado == False, models.Item.borrado == False).all()]
 
 @app.post("/auth/register/")
-def register(registro: schemas.UsuarioCreate, db: Session = Depends(get_db)):
+def register(registro: schemas.UsuarioBase, db: Session = Depends(get_db)):
     if db.query(models.Usuario).filter_by(email=registro.email, borrado=False).first():
         raise HTTPException(400, f"El email {registro.email} ya está registrado")
     if db.query(models.Usuario).filter_by(telefono=registro.telefono, borrado=False).first():

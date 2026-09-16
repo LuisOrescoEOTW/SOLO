@@ -14,7 +14,7 @@ import {
   TextField,
   useTheme,
 } from "@mui/material";
-import type { Isector } from "../models/Isector";
+import type { Isector } from "../models/Iitem";
 
 interface Props {
   open: boolean;
@@ -22,7 +22,7 @@ interface Props {
   editState: Isector | null;
 }
 
-export const SectorForm = ({ open, onClose, editState }: Props) => {
+export const ItemForm = ({ open, onClose, editState }: Props) => {
   const theme = useTheme();
   //Leer
   const dispatch = useDispatch<AppDispatch>();

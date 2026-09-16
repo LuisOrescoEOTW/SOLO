@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { Iperfil } from '../../app/models/Iperfil';
-import type { Isector } from '../../app/models/Isector';
-import type { Iperfilxsector } from '../../app/models/Iperfilxsector';
+import type { Isector } from '../../app/models/Iitem';
+import type { Iperfilxsector } from '../../app/models/Iitem_perfil';
 import type { Iusuario } from '../../app/models/auth/Iusuario';
 import type { Ihabilbloq } from '../../app/models/Ihabil';
 

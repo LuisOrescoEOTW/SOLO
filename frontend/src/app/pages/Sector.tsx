@@ -9,8 +9,8 @@ import { deletedFisico } from "../../redux/slices/thunks";
 import { actionCreatorMap } from "../../redux/actionCreatorMap";
 import { toast } from "react-toastify";
 import AlertDialog from "../hooks/AlertDialog";
-import type { Isector } from "../models/Isector";
-import { SectorForm } from "../components/SectorForm";
+import type { Isector } from "../models/Iitem";
+import { SectorForm } from "../components/ItemForm";
 
 export const Sector = () => {
   //Leer
