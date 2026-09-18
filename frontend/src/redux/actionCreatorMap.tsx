@@ -1,15 +1,15 @@
 import {
+  item,
   perfil,
-  sector,
-  perfilxsector,
+  item_perfil,
   usuario,
   habil,
 } from "./slices/slice";
 
 export const actionCreatorMap = {
+  item,
   perfil,
-  sector,
-  perfilxsector,
+  item_perfil,
   usuario,
   habil,
 };

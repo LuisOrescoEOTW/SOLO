@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit'
-import { habilSlice, perfilSlice, perfilxsectorSlice, sectorSlice, usuarioSlice } from './slices/slice'
+import { habilSlice, usuarioSlice, itemSlice, perfilSlice, item_perfilSlice } from './slices/slice'
 import { authSlice } from './slices/authSlice'
 
 export const store = configureStore({
@@ -8,11 +8,12 @@ export const store = configureStore({
 	usuario: usuarioSlice.reducer,
 	
 	perfil: perfilSlice.reducer,
-	sector: sectorSlice.reducer,
-	perfilxsector: perfilxsectorSlice.reducer,
+	item: itemSlice.reducer,
+	item_perfil: item_perfilSlice.reducer,
 	habil: habilSlice.reducer,
 	
   },
 })
 export type RootState = ReturnType<typeof store.getState>
 export type AppDispatch = typeof store.dispatch
+

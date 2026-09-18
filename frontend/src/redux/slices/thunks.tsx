@@ -2,7 +2,8 @@ import { Api } from "../../api/api";
 import type { AppDispatch } from "../store";
 
 //Get All
-export const get = (tabla, actionCreatorMap) => {
+// export const get = (tabla: any, actionCreatorMap: any) => {
+export const getAll = (tabla: any, actionCreatorMap: any) => {
   return async (dispatch: AppDispatch) => {
     try {
       const { data } = await Api.get(`/${tabla}/`);
@@ -19,7 +20,8 @@ export const get = (tabla, actionCreatorMap) => {
 };
 
 //Get All con relaciones
-export const getRelaciones = (tabla, actionCreatorMap) => {
+// export const getRelaciones = (tabla: any, actionCreatorMap: any) => {
+export const getAllRelaciones = (tabla: any, actionCreatorMap: any) => {
   return async (dispatch: AppDispatch) => {
     try {
       const { data } = await Api.get(`/${tabla}/relaciones/`);
@@ -30,16 +32,22 @@ export const getRelaciones = (tabla, actionCreatorMap) => {
         console.error(`No actionCreator encontrado en tabla: ${tabla}`);
       }
     } catch (error) {
-      console.error("Error en getAll:", error);
+      console.error("Error en getAllRelaciones:", error);
     }
   };
 };
 
-//Get Tabla - Campo - Id
-export const getSiExiste = (tabla, actionCreatorMap, campo, id) => {
+//Get Tabla - Campo - Valor
+// export const getSiExiste = (
+export const getByCampoValor = (
+  tabla: any,
+  actionCreatorMap: any,
+  campo: any,
+  valor: any,
+) => {
   return async (dispatch: AppDispatch) => {
     try {
-      const { data } = await Api.get(`/${tabla}/${campo}/${id}/campo/`);
+      const { data } = await Api.get(`/${tabla}/${campo}/${valor}/campo/`);
       const actionCreator = actionCreatorMap[tabla];
       if (actionCreator) {
         dispatch(actionCreator({ [tabla]: data }));
@@ -47,21 +55,51 @@ export const getSiExiste = (tabla, actionCreatorMap, campo, id) => {
         console.error(`No actionCreator encontrado en tabla: ${tabla}`);
       }
     } catch (error) {
-      console.error("Error en getAll:", error);
+      console.error("Error en getByCampoValor:", error);
+    }
+  };
+};
+
+//Get Tabla - Campo - Valor con relaciones
+export const getByCampoValorRelaciones = (
+  tabla: any,
+  actionCreatorMap: any,
+  campo: any,
+  valor: any,
+) => {
+  return async (dispatch: AppDispatch) => {
+    try {
+      const { data } = await Api.get(
+        `/${tabla}/${campo}/${valor}/campo/relaciones/`,
+      );
+      const actionCreator = actionCreatorMap[tabla];
+      if (actionCreator) {
+        dispatch(actionCreator({ [tabla]: data }));
+      } else {
+        console.error(`No actionCreator encontrado en tabla: ${tabla}`);
+      }
+    } catch (error) {
+      console.error("Error en getByCampoValorRelaciones:", error);
     }
   };
 };
 
 //Insertar Nuevo
-// nombre de la tabla, actionCreatorMap, dato a enviar, hacer get,get con relaciones o no
-export const post = (tabla, actionCreatorMap, data, hacerget, relaciones) => {
+// nombre de la tabla, actionCreatorMap, dato a enviar, hacer get, get con relaciones o no
+export const post = (
+  tabla: any,
+  actionCreatorMap: any,
+  data: any,
+  hacerget: boolean,
+  relaciones: boolean,
+) => {
   return async (dispatch: AppDispatch) => {
     const response = await Api.post(`/${tabla}/`, data);
     if (hacerget) {
       if (relaciones) {
-        await dispatch(getRelaciones(tabla, actionCreatorMap));
+        await dispatch(getAllRelaciones(tabla, actionCreatorMap));
       } else {
-        await dispatch(get(tabla, actionCreatorMap));
+        await dispatch(getAll(tabla, actionCreatorMap));
       }
     }
     return response.data;
@@ -69,14 +107,44 @@ export const post = (tabla, actionCreatorMap, data, hacerget, relaciones) => {
 };
 
 //Modificar
-export const put = (tabla, actionCreatorMap, data, hacerget, relaciones) => {
+export const put = (
+  tabla: any,
+  actionCreatorMap: any,
+  id: number,
+  data: any,
+  hacerget: boolean,
+  relaciones: boolean,
+) => {
   return async (dispatch: AppDispatch) => {
-    const response = await Api.put(`/${tabla}/${data.id}`, data);
+    const response = await Api.put(`/${tabla}/${id}/`, data);
     if (hacerget) {
       if (relaciones) {
-        await dispatch(getRelaciones(tabla, actionCreatorMap));
+        await dispatch(getAllRelaciones(tabla, actionCreatorMap));
       } else {
-        await dispatch(get(tabla, actionCreatorMap));
+        await dispatch(getAll(tabla, actionCreatorMap));
+      }
+    }
+    return response.data;
+  };
+};
+
+//Modificar con PK Compuesto
+export const putCompuesto = (
+  tabla: any,
+  actionCreatorMap: any,
+  pk1: number,
+  pk2: number,
+  data: any,
+  hacerget: boolean,
+  relaciones: boolean,
+) => {
+  return async (dispatch: AppDispatch) => {
+    const response = await Api.put(`/${tabla}/${pk1}/${pk2}/`, data);
+    if (hacerget) {
+      if (relaciones) {
+        await dispatch(getAllRelaciones(tabla, actionCreatorMap));
+      } else {
+        await dispatch(getAll(tabla, actionCreatorMap));
       }
     }
     return response.data;
@@ -85,20 +153,45 @@ export const put = (tabla, actionCreatorMap, data, hacerget, relaciones) => {
 
 //Eliminar Lógico
 export const deleted = (
-  tabla,
-  actionCreatorMap,
-  data: number,
-  hacerget,
-  relaciones
+  tabla: any,
+  actionCreatorMap: any,
+  id: number,
+  hacerget: boolean,
+  relaciones: boolean,
 ) => {
   return async (dispatch: AppDispatch) => {
     try {
-      await Api.delete(`/${tabla}/${data}`);
+      await Api.delete(`/${tabla}/${id}/`);
       if (hacerget) {
         if (relaciones) {
-          dispatch(getRelaciones(tabla, actionCreatorMap));
+          await dispatch(getAllRelaciones(tabla, actionCreatorMap));
         } else {
-          dispatch(get(tabla, actionCreatorMap));
+          await dispatch(getAll(tabla, actionCreatorMap));
+        }
+      }
+    } catch (error) {
+      console.error("Error en delete:", error);
+    }
+  };
+};
+
+//Eliminar Lógico Compuesto
+export const deletedCompuesto = (
+  tabla: any,
+  actionCreatorMap: any,
+  pk1: number,
+  pk2: number,
+  hacerget: boolean,
+  relaciones: boolean,
+) => {
+  return async (dispatch: AppDispatch) => {
+    try {
+      await Api.delete(`/${tabla}/${pk1}/${pk2}/`);
+      if (hacerget) {
+        if (relaciones) {
+          await dispatch(getAllRelaciones(tabla, actionCreatorMap));
+        } else {
+          await dispatch(getAll(tabla, actionCreatorMap));
         }
       }
     } catch (error) {
@@ -109,26 +202,47 @@ export const deleted = (
 
 //Eliminar Fisico
 export const deletedFisico = (
-  tabla,
-  actionCreatorMap,
-  data: number,
-  hacerget,
-  relaciones
+  tabla: any,
+  actionCreatorMap: any,
+  id: number,
+  hacerget: boolean,
+  relaciones: boolean,
 ) => {
   return async (dispatch: AppDispatch) => {
-    await Api.delete(`/${tabla}/fisico/${data}`);
+    await Api.delete(`/${tabla}/${id}/fisico/`);
     if (hacerget) {
       if (relaciones) {
-        dispatch(getRelaciones(tabla, actionCreatorMap));
+        await dispatch(getAllRelaciones(tabla, actionCreatorMap));
       } else {
-        dispatch(get(tabla, actionCreatorMap));
+        await dispatch(getAll(tabla, actionCreatorMap));
+      }
+    }
+  };
+};
+
+//Eliminar Fisico Compuesto
+export const deletedFisicoCompuesto = (
+  tabla: any,
+  actionCreatorMap: any,
+  pk1: number,
+  pk2: number,
+  hacerget: boolean,
+  relaciones: boolean,
+) => {
+  return async (dispatch: AppDispatch) => {
+    await Api.delete(`/${tabla}/${pk1}/${pk2}/fisico/`);
+    if (hacerget) {
+      if (relaciones) {
+        await dispatch(getAllRelaciones(tabla, actionCreatorMap));
+      } else {
+        await dispatch(getAll(tabla, actionCreatorMap));
       }
     }
   };
 };
 
 //Vaciar
-export const vaciar = (tabla, actionCreatorMap) => {
+export const vaciar = (tabla: any, actionCreatorMap: any) => {
   return async (dispatch: AppDispatch) => {
     try {
       const actionCreator = actionCreatorMap[tabla];
@@ -144,11 +258,11 @@ export const vaciar = (tabla, actionCreatorMap) => {
 };
 
 //********************************************************************* */
-//Get Fecha de tabla Habil
-export const getHabilFecha = (tabla, actionCreatorMap) => {
+//Get Fecha de Auth
+export const getAuthFecha = (tabla: any, actionCreatorMap: any) => {
   return async (dispatch: AppDispatch) => {
     try {
-      const { data } = await Api.get(`/${tabla}/fecha/`);
+      const { data } = await Api.get(`/auth/fecha/`);
       const actionCreator = actionCreatorMap[tabla];
       if (actionCreator) {
         dispatch(actionCreator({ [tabla]: data }));
@@ -156,20 +270,20 @@ export const getHabilFecha = (tabla, actionCreatorMap) => {
         console.error(`No actionCreator encontrado en tabla: ${tabla}`);
       }
     } catch (error) {
-      console.error("Error en getAll:", error);
+      console.error("Error en getAuthFecha:", error);
     }
   };
 };
 
 // Actualizar Fecha
-export const putHabilFecha = (
+export const putAuthFecha = (
   email: string,
   password: string,
-  vencimiento: string
+  vencimiento: string,
 ) => {
   return async () => {
     try {
-      await Api.put("/habil/validar/", {
+      await Api.put("/auth/habilitar/", {
         email,
         password,
         vencimiento,

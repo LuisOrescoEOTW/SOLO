@@ -1,9 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { Iperfil } from '../../app/models/Iperfil';
-import type { Isector } from '../../app/models/Iitem';
-import type { Iperfilxsector } from '../../app/models/Iitem_perfil';
+import type { Iitem } from '../../app/models/Iitem';
 import type { Iusuario } from '../../app/models/auth/Iusuario';
 import type { Ihabilbloq } from '../../app/models/Ihabil';
+import type { Iitem_perfil } from '../../app/models/Iitem_perfil';
 
 export const perfilSlice = createSlice({
  name: 'perfil',
@@ -17,26 +17,26 @@ export const perfilSlice = createSlice({
  },
 })
 
-export const sectorSlice = createSlice({
- name: 'sector',
+export const itemSlice = createSlice({
+ name: 'item',
  initialState: {
-   sector: [] as Isector[],
+   item: [] as Iitem[],
  },
  reducers: {
-   sector: (state, action) => {
-     state.sector = action.payload.sector;
+   item: (state, action) => {
+     state.item = action.payload.item;
    },
  },
 })
 
-export const perfilxsectorSlice = createSlice({
- name: 'perfilxsector',
+export const item_perfilSlice = createSlice({
+ name: 'item_perfil',
  initialState: {
-   perfilxsector: [] as Iperfilxsector[],
+   item_perfil: [] as Iitem_perfil[],
  },
  reducers: {
-   perfilxsector: (state, action) => {
-     state.perfilxsector = action.payload.perfilxsector;
+   item_perfil: (state, action) => {
+     state.item_perfil = action.payload.item_perfil;
    },
  },
 })
@@ -66,7 +66,7 @@ export const habilSlice = createSlice({
 })
 
 export const { perfil } = perfilSlice.actions
-export const { sector } = sectorSlice.actions
-export const { perfilxsector } = perfilxsectorSlice.actions
+export const { item } = itemSlice.actions
+export const { item_perfil } = item_perfilSlice.actions
 export const { usuario } = usuarioSlice.actions
 export const { habil } = habilSlice.actions

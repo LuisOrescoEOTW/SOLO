@@ -16,26 +16,25 @@ import {
 } from "@mui/material";
 import { post, put } from "../../redux/slices/thunks";
 import { actionCreatorMap } from "../../redux/actionCreatorMap";
-import type { Iperfil } from "../models/Iperfil";
-import type { Iperfilxsector } from "../models/Iitem_perfil";
+import type { Iitem_perfil } from "../models/Iitem_perfil";
 
 interface Props {
   open: boolean;
   onClose: () => void;
-  editState: Iperfil | null;
+  editState: Iitem_perfil | null;
 }
 
-export const PerfilXSectorForm = ({ open, onClose, editState }: Props) => {
+export const Item_PerfilForm = ({ open, onClose, editState }: Props) => {
   const theme = useTheme();
   //Leer
   const dispatch = useDispatch<AppDispatch>();
   const perfiles = useSelector((state: RootState) => state.perfil.perfil);
-  const sectores = useSelector((state: RootState) => state.sector.sector);
+  const items = useSelector((state: RootState) => state.item.item);
 
   // Hook useForm
   const inicialState = {
     perfilid: perfiles && perfiles.length > 0 ? perfiles[0].id : 1,
-    sectorid: sectores && sectores.length > 0 ? sectores[0].id : 1,
+    itemid: items && items.length > 0 ? items[0].id : 1,
     nivel: 1,
   };
 
@@ -44,7 +43,7 @@ export const PerfilXSectorForm = ({ open, onClose, editState }: Props) => {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<Iperfilxsector>({ defaultValues: inicialState });
+  } = useForm<Iitem_perfil>({ defaultValues: inicialState });
 
   // Resetear el formulario con los valores de editState cuando cambia
   useEffect(() => {
@@ -56,9 +55,9 @@ export const PerfilXSectorForm = ({ open, onClose, editState }: Props) => {
   }, [editState, reset]);
 
   // Guardar (Agregar/Editar)
-  const onSubmit = (data: Iperfilxsector) => {
+  const onSubmit = (data: Iitem_perfil) => {
     if (editState) {
-      dispatch(put("perfilxsector", actionCreatorMap, data, true, true))
+      dispatch(put("item_perfil", actionCreatorMap, data, true, true))
         .then(() => {
           toast.info("Elemento modificado");
           reset(inicialState);
@@ -68,7 +67,7 @@ export const PerfilXSectorForm = ({ open, onClose, editState }: Props) => {
           toast.error("Error al modificar el elemento. Posible duplicado")
         );
     } else {
-      dispatch(post("perfilxsector", actionCreatorMap, data, true, true))
+      dispatch(post("item_perfil", actionCreatorMap, data, true, true))
         .then(() => {
           toast.success("Elemento agregado");
           reset(inicialState);
@@ -82,7 +81,7 @@ export const PerfilXSectorForm = ({ open, onClose, editState }: Props) => {
 
   return (
     <>
-      {perfiles && sectores && (
+      {perfiles && items && (
         <Dialog open={open} onClose={onClose}>
           <DialogTitle
             sx={{
@@ -95,13 +94,13 @@ export const PerfilXSectorForm = ({ open, onClose, editState }: Props) => {
               m: 1,
             }}
           >
-            {editState ? "Editar Perfil x Sector" : "Nuevo Perfil x Sector"}
+            {editState ? "Editar Item x Perfil" : "Nuevo Item x Perfil"}
           </DialogTitle>
 
           <DialogContent>
             {/* Perfil */}
             <Controller
-              name="perfilid"
+              name="perfil_id"
               control={control}
               rules={{ required: "El perfil es obligatorio" }}
               render={({ field }) => (
@@ -125,17 +124,17 @@ export const PerfilXSectorForm = ({ open, onClose, editState }: Props) => {
                 </Select>
               )}
             />
-            {errors.perfilid && (
+            {errors.perfil_id && (
               <p style={{ color: "red", fontSize: "0.8rem" }}>
-                {errors.perfilid.message}
+                {errors.perfil_id.message}
               </p>
             )}
 
-            {/* Sector */}
+            {/* Item */}
             <Controller
-              name="sectorid"
+              name="item_id"
               control={control}
-              rules={{ required: "El sector es obligatorio" }}
+              rules={{ required: "El item es obligatorio" }}
               render={({ field }) => (
                 <Select
                   {...field}
@@ -147,19 +146,19 @@ export const PerfilXSectorForm = ({ open, onClose, editState }: Props) => {
                   sx={{ mt: 2 }}
                 >
                   <MenuItem value="">
-                    <em>Seleccione un sector</em>
+                    <em>Seleccione un item</em>
                   </MenuItem>
-                  {sectores.map((sector) => (
-                    <MenuItem key={sector.id} value={sector.id}>
-                      {sector.nombre}
+                  {items.map((item) => (
+                    <MenuItem key={item.id} value={item.id}>
+                      {item.nombre}
                     </MenuItem>
                   ))}
                 </Select>
               )}
             />
-            {errors.sectorid && (
+            {errors.item_id && (
               <p style={{ color: "red", fontSize: "0.8rem" }}>
-                {errors.sectorid.message}
+                {errors.item_id.message}
               </p>
             )}
 

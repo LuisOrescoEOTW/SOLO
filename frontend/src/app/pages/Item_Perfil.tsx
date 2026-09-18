@@ -5,20 +5,20 @@ import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import { Fab, Paper, Tooltip, useTheme } from "@mui/material";
 import { Add, Delete, Edit } from "@mui/icons-material";
 import { useMemo, useState } from "react";
-import type { Iperfil } from "../models/Iperfil";
-import { deleted, deletedFisico } from "../../redux/slices/thunks";
+import { deletedFisico } from "../../redux/slices/thunks";
 import { actionCreatorMap } from "../../redux/actionCreatorMap";
 import { toast } from "react-toastify";
 import AlertDialog from "../hooks/AlertDialog";
-import { PerfilXSectorForm } from "../components/PerfilXSectorForm";
+import type { Iitem_perfil } from "../models/Iitem_perfil";
+import { Item_PerfilForm } from "../components/Item_PerfilForm";
 
-export const PerfilXSector = () => {
+export const Item_Perfil = () => {
   //Leer
   const dispatch = useDispatch<AppDispatch>();
   const theme = useTheme();
 
-  const perfilesxsectores = useSelector(
-    (state: RootState) => state.perfilxsector.perfilxsector
+  const items_perfiles = useSelector(
+    (state: RootState) => state.item_perfil.item_perfil
   );
 
   // Columnas
@@ -30,37 +30,13 @@ export const PerfilXSector = () => {
       flex: 1,
     },
     {
-      field: "sector",
-      headerName: "Sector",
-      renderCell: (params) => <>{params.row?.sector.nombre || "-"}</>,
+      field: "item",
+      headerName: "Item",
+      renderCell: (params) => <>{params.row?.item.nombre || "-"}</>,
       flex: 1,
     },
     { field: "nivel", headerName: "Nivel", flex: 1 },
-    {
-      field: "fechacreacion",
-      headerName: "Fecha Creación",
-      renderCell: (params) => (
-        <>
-          {params.row?.fechacreacion
-            ? new Date(params.row.fechacreacion).toLocaleDateString("es-AR")
-            : "Sin fecha"}
-        </>
-      ),
-      flex: 1,
-    },
-    {
-      field: "fechamodificacion",
-      headerName: "Fecha Modificación",
-      renderCell: (params) => (
-        <>
-          {params.row?.fechamodificacion
-            ? new Date(params.row.fechamodificacion).toLocaleDateString("es-AR")
-            : "Sin fecha"}
-        </>
-      ),
-      flex: 1,
-    },
-
+    
     {
       field: "acciones",
       headerName: "Acciones",
@@ -112,14 +88,14 @@ export const PerfilXSector = () => {
 
   // Agregar - Modificar
   const [modalAbrir, setModalAbrir] = useState(false);
-  const [editState, setEditState] = useState<Iperfil | null>(null);
+  const [editState, setEditState] = useState<Iitem_perfil | null>(null);
 
   //Borrar
   const [Id, setId] = useState<number | null>(null); // ID a eliminar o blanquear
   const [openDialog, setOpenDialog] = useState(false);
   const handleDialogClose = (confirmDelete: boolean) => {
     if (confirmDelete && Id !== null) {
-      dispatch(deletedFisico("perfilxsector", actionCreatorMap, Id, true, true))
+      dispatch(deletedFisico("item_perfil", actionCreatorMap, Id, true, true))
         .then(() => toast.error("Elemento eliminado"))
         .catch(() => toast.error("Error al eliminar el elemento"));
     }
@@ -128,12 +104,12 @@ export const PerfilXSector = () => {
   };
 
   //Otras Tablas 
-  const otrasTablas = useMemo(() => ["perfil", "sector"], []);
+  const otrasTablas = useMemo(() => ["perfil", "item"], []);
 
   return (
     <>
-      <Leer tabla="perfilxsector" conRelaciones={true} otrasTablas={otrasTablas} />
-      {perfilesxsectores && (
+      <Leer tabla="item_perfil" conRelaciones={true} otrasTablas={otrasTablas} />
+      {items_perfiles && (
         <>
           <div>
             <div
@@ -149,7 +125,7 @@ export const PerfilXSector = () => {
                 borderRadius: theme.shape.borderRadius,
               }}
             >
-              <h2>Perfil x Sector</h2>
+              <h2>Item x Perfil</h2>
               <div style={{ textAlign: "end" }}>
                 <Tooltip title="Agregar">
                   <Fab
@@ -169,7 +145,7 @@ export const PerfilXSector = () => {
 
             <Paper>
               <DataGrid
-                rows={perfilesxsectores}
+                rows={items_perfiles}
                 columns={columns}
                 initialState={{
                   pagination: { paginationModel: paginationModels },
@@ -188,7 +164,7 @@ export const PerfilXSector = () => {
           </div>
 
           {/* Alta - Modificaciones */}
-          <PerfilXSectorForm
+          <Item_PerfilForm
             open={modalAbrir}
             onClose={() => (setModalAbrir(false), setEditState(null))}
             editState={editState}

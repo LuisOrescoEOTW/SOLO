@@ -14,12 +14,12 @@ import {
   TextField,
   useTheme,
 } from "@mui/material";
-import type { Isector } from "../models/Iitem";
+import type { Iitem } from "../models/Iitem";
 
 interface Props {
   open: boolean;
   onClose: () => void;
-  editState: Isector | null;
+  editState: Iitem | null;
 }
 
 export const ItemForm = ({ open, onClose, editState }: Props) => {
@@ -37,7 +37,7 @@ export const ItemForm = ({ open, onClose, editState }: Props) => {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<Isector>({ defaultValues: inicialState });
+  } = useForm<Iitem>({ defaultValues: inicialState });
 
   // Resetear el formulario con los valores de editState cuando cambia
   useEffect(() => {
@@ -49,9 +49,9 @@ export const ItemForm = ({ open, onClose, editState }: Props) => {
   }, [editState, reset]);
 
   // Guardar (Agregar/Editar)
-  const onSubmit = (data: Isector) => {
+  const onSubmit = (data: Iitem) => {
     if (editState) {
-      dispatch(put("sector", actionCreatorMap, data, true, true))
+      dispatch(put("item", actionCreatorMap, data, true, true))
         .then(() => {
           toast.info("Elemento modificado");
           reset(inicialState);
@@ -61,7 +61,7 @@ export const ItemForm = ({ open, onClose, editState }: Props) => {
           toast.error("Error al modificar el elemento. Posible duplicado")
         );
     } else {
-      dispatch(post("sector", actionCreatorMap, data, true, true))
+      dispatch(post("item", actionCreatorMap, data, true, true))
         .then(() => {
           toast.success("Elemento agregado");
           reset(inicialState);
@@ -86,7 +86,7 @@ export const ItemForm = ({ open, onClose, editState }: Props) => {
           m: 1,
         }}
       >
-        {editState ? "Editar Sector" : "Nuevo Sector"}
+        {editState ? "Editar Item" : "Nuevo Item"}
       </DialogTitle>
 
       <DialogContent>

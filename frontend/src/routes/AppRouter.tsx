@@ -7,15 +7,14 @@ import { Inicio } from "../app/pages/Inicio";
 // import { CambiarPassword } from "../app/pages/CambiarPassword";
 import { Usuario } from "../app/pages/Usuario";
 import { Perfil } from "../app/pages/Perfil";
-import { Sector } from "../app/pages/Sector";
-import { PerfilXSector } from "../app/pages/PerfilXSector";
+import { Item } from "../app/pages/Item";
+import { Item_Perfil } from "../app/pages/Item_Perfil";
 
 export const AppRouter = () => {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
-        {/* <Route path="/cambiar-password" element={<CambiarPassword />} /> */}
         <Route
           path="/"
           element={
@@ -27,8 +26,8 @@ export const AppRouter = () => {
           <Route index element={<Inicio />} />
           <Route path="usuario" element={<Usuario />} />
           <Route path="perfil" element={<Perfil />} />
-          <Route path="sector" element={<Sector />} />
-          <Route path="perfil-sector" element={<PerfilXSector />} />
+          <Route path="item" element={<Item />} />
+          <Route path="item_perfil" element={<Item_Perfil />} />
 
         </Route>
       </Routes>
