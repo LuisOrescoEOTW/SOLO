@@ -12,7 +12,7 @@ export interface Iusuario {
   bloqueado?: Date | null;
   vencimiento?: Date | null;
   borrado?: boolean | false;
-  sectores?: any;
+  items?: string[];
 }
 
 // theme.palette.primary.main

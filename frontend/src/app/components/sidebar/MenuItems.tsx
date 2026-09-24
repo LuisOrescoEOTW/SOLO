@@ -3,26 +3,29 @@ import { Accessibility, Key, Person, Sync } from "@mui/icons-material";
 // divider en true coloca una linea debajo
 export const MenuItems = [
   {
-    text: "Usuario",
+    text: "usuario",
+    name: "Usuario",
     icon: <Person />,
     path: "/usuario",
-  },
-  {
-    text: "Perfil",
-    icon: <Accessibility />,
-    path: "/perfil",
     divider: true,
   },
   {
-    text: "Item",
+    text: "perfil",
+    name: "Perfil",
+    icon: <Accessibility />,
+    path: "/perfil",
+  },
+  {
+    text: "item",
+    name: "Item",
     icon: <Key />,
     path: "/item",
   },
   {
-    text: "Perfil -> Item",
+    text: "item_perfil",
+    name: "Item - Perfil",
     icon: <Sync />,
-    path: "/perfil-item",
+    path: "/item_perfil",
   },
   // Aquí agregar nueva tabla
-
 ];

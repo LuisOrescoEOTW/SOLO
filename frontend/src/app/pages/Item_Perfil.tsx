@@ -163,6 +163,7 @@ export const Item_Perfil = () => {
               <DataGrid
                 rows={items_perfiles}
                 columns={columns}
+                getRowId={(row) => `${row.item_id}-${row.perfil_id}`}
                 initialState={{
                   pagination: { paginationModel: paginationModels },
                 }}

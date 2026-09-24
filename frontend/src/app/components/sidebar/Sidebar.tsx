@@ -38,7 +38,7 @@ export const Sidebar = ({ collapsed, mobileOpen, onMobileClose }: Props) => {
       <Toolbar />
       <List>
         {MenuItems.filter(
-          (item) => sectoresaprobados?.sectores?.includes(item.text) ?? false,
+          (item) => sectoresaprobados?.items?.includes(item.text) ?? false,
         ).map((item) => (
           <Tooltip
             key={item.text}
@@ -48,7 +48,7 @@ export const Sidebar = ({ collapsed, mobileOpen, onMobileClose }: Props) => {
           >
             <Box>
               <ListItemButton
-                key={item.text}
+                key={item.name}
                 component={Link}
                 to={item.path}
                 onClick={onMobileClose}
@@ -57,7 +57,7 @@ export const Sidebar = ({ collapsed, mobileOpen, onMobileClose }: Props) => {
 
                 {!collapsed && (
                   <ListItemText
-                    primary={item.text}
+                    primary={item.name}
                     sx={{
                       opacity: {
                         xs: 1,

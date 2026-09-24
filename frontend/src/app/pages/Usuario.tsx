@@ -31,37 +31,6 @@ export const Usuario = () => {
     },
     { field: "email", headerName: "Email", flex: 1 },
     { field: "telefono", headerName: "Teléfono", flex: 1 },
-    // {
-    //   field: "bloqueado",
-    //   headerName: "Bloqueado",
-    //   renderCell: (params) => <>{params.row?.bloqueado ? "Sí" : "No"}</>,
-    //   flex: 1,
-    // },
-    // {
-    //   field: "fechacreacion",
-    //   headerName: "Fecha Creación",
-    //   renderCell: (params) => (
-    //     <>
-    //       {params.row?.fechacreacion
-    //         ? new Date(params.row.fechacreacion).toLocaleDateString("es-AR")
-    //         : "Sin fecha"}
-    //     </>
-    //   ),
-    //   flex: 1,
-    // },
-    // {
-    //   field: "fechamodificacion",
-    //   headerName: "Fecha Modificación",
-    //   renderCell: (params) => (
-    //     <>
-    //       {params.row?.fechamodificacion
-    //         ? new Date(params.row.fechamodificacion).toLocaleDateString("es-AR")
-    //         : "Sin fecha"}
-    //     </>
-    //   ),
-    //   flex: 1,
-    // },
-
     {
       field: "acciones",
       headerName: "Acciones",
