@@ -51,14 +51,14 @@ export const PerfilForm = ({ open, onClose, editState }: Props) => {
   // Guardar (Agregar/Editar)
   const onSubmit = (data: Iperfil) => {
     if (editState) {
-      dispatch(put("perfil", actionCreatorMap, data, true, false))
+      dispatch(put("perfil", actionCreatorMap, data.id ?? 0, data, true, false))
         .then(() => {
           toast.info("Elemento modificado");
           reset(inicialState);
           onClose();
         })
         .catch(() =>
-          toast.error("Error al modificar el elemento. Posible duplicado")
+          toast.error("Error al modificar el elemento. Posible duplicado"),
         );
     } else {
       dispatch(post("perfil", actionCreatorMap, data, true, false))
@@ -68,7 +68,7 @@ export const PerfilForm = ({ open, onClose, editState }: Props) => {
           onClose();
         })
         .catch(() =>
-          toast.error("Error al agregar el elemento. Posible duplicado")
+          toast.error("Error al agregar el elemento. Posible duplicado"),
         );
     }
   };

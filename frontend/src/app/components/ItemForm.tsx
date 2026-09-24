@@ -51,14 +51,14 @@ export const ItemForm = ({ open, onClose, editState }: Props) => {
   // Guardar (Agregar/Editar)
   const onSubmit = (data: Iitem) => {
     if (editState) {
-      dispatch(put("item", actionCreatorMap, data, true, true))
+      dispatch(put("item", actionCreatorMap, data.id ?? 0, data, true, true))
         .then(() => {
           toast.info("Elemento modificado");
           reset(inicialState);
           onClose();
         })
         .catch(() =>
-          toast.error("Error al modificar el elemento. Posible duplicado")
+          toast.error("Error al modificar el elemento. Posible duplicado"),
         );
     } else {
       dispatch(post("item", actionCreatorMap, data, true, true))
@@ -68,7 +68,7 @@ export const ItemForm = ({ open, onClose, editState }: Props) => {
           onClose();
         })
         .catch(() =>
-          toast.error("Error al agregar el elemento. Posible duplicado")
+          toast.error("Error al agregar el elemento. Posible duplicado"),
         );
     }
   };

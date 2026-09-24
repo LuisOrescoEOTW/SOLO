@@ -2,7 +2,6 @@ import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../redux/store";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { putHabilFecha } from "../../redux/slices/thunks";
 import { toast } from "react-toastify";
 import {
   Button,
@@ -17,7 +16,9 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LeerHabil } from "../hooks/LeerHabil";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
+import { authHabilitar } from "../../redux/slices/authThunks";
+// import { putHabilFecha } from "../../redux/slices/thunks";
 
 interface Props {
   onCambiarPassword: () => void;
@@ -44,7 +45,11 @@ export const LoginPageHabil = ({ onCambiarPassword }: Props) => {
     formState: { errors },
     reset,
     setValue,
-  } = useForm({
+  } = useForm<{
+    email: string;
+    password: string;
+    vencimiento: Dayjs | null;
+  }>({
     defaultValues: inicialState,
   });
 
@@ -65,7 +70,7 @@ export const LoginPageHabil = ({ onCambiarPassword }: Props) => {
           : null,
       };
       const result = await dispatch(
-        putHabilFecha(data.email, data.password, data.vencimiento)
+        authHabilitar(data.email, data.password, data.vencimiento),
       );
       if (result.success) {
         toast.success("Nuevo Vencimiento Actualizado");

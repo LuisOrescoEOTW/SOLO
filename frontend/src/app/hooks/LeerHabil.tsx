@@ -2,7 +2,7 @@ import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../../redux/store";
 import { useEffect } from "react";
 import { actionCreatorMap } from "../../redux/actionCreatorMap";
-import { getHabilFecha } from "../../redux/slices/thunks";
+import { authFecha } from "../../redux/slices/authThunks";
 
 interface Props {
   tabla?: string;
@@ -13,7 +13,7 @@ export const LeerHabil = ({ tabla }: Props) => {
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    dispatch(getHabilFecha(tabla, actionCreatorMap));
+    dispatch(authFecha(tabla, actionCreatorMap));
   }, [dispatch, tabla]);
 
   return null;

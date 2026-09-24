@@ -14,7 +14,7 @@ import {
   TextField,
   useTheme,
 } from "@mui/material";
-import { post, put } from "../../redux/slices/thunks";
+import { post, putCompuesto } from "../../redux/slices/thunks";
 import { actionCreatorMap } from "../../redux/actionCreatorMap";
 import type { Iitem_perfil } from "../models/Iitem_perfil";
 
@@ -57,14 +57,24 @@ export const Item_PerfilForm = ({ open, onClose, editState }: Props) => {
   // Guardar (Agregar/Editar)
   const onSubmit = (data: Iitem_perfil) => {
     if (editState) {
-      dispatch(put("item_perfil", actionCreatorMap, data, true, true))
+      dispatch(
+        putCompuesto(
+          "item_perfil",
+          actionCreatorMap,
+          data.item_id,
+          data.perfil_id,
+          data,
+          true,
+          true,
+        ),
+      )
         .then(() => {
           toast.info("Elemento modificado");
           reset(inicialState);
           onClose();
         })
         .catch(() =>
-          toast.error("Error al modificar el elemento. Posible duplicado")
+          toast.error("Error al modificar el elemento. Posible duplicado"),
         );
     } else {
       dispatch(post("item_perfil", actionCreatorMap, data, true, true))
@@ -74,7 +84,7 @@ export const Item_PerfilForm = ({ open, onClose, editState }: Props) => {
           onClose();
         })
         .catch(() =>
-          toast.error("Error al agregar el elemento. Posible duplicado")
+          toast.error("Error al agregar el elemento. Posible duplicado"),
         );
     }
   };

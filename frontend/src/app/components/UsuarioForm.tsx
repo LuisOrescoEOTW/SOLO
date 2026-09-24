@@ -81,7 +81,7 @@ export const UsuarioForm = ({ open, onClose, editState }: Props) => {
   };
 
   // Manejo de la imagen
-  const imagenValue = watch("foto");
+  // const imagenValue = watch("foto");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Función para manejar la selección del archivo

@@ -3,7 +3,6 @@ import type { AppDispatch } from "../../redux/store";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { cambiarPassword } from "../../redux/slices/authThunks";
 import {
   Button,
   IconButton,
@@ -13,6 +12,7 @@ import {
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import { authCambiarPassword } from "../../redux/slices/authThunks";
 
 interface Props {
   email: string;
@@ -52,7 +52,9 @@ export const LoginPageIniciarCambiarPass = ({
       return;
     }
     try {
-      const result = await dispatch(cambiarPassword(email, data.passwordNueva));
+      const result = await dispatch(
+        authCambiarPassword(email, data.passwordNueva),
+      );
       if (result.success) {
         toast.success("Contraseña actualizada");
         reset(inicialState);

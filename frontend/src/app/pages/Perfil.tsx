@@ -23,31 +23,6 @@ export const Perfil = () => {
   const columns: GridColDef[] = [
     { field: "nombre", headerName: "Nombre", flex: 1 },
     {
-      field: "fechacreacion",
-      headerName: "Fecha Creación",
-      renderCell: (params) => (
-        <>
-          {params.row?.fechacreacion
-            ? new Date(params.row.fechacreacion).toLocaleDateString("es-AR")
-            : "Sin fecha"}
-        </>
-      ),
-      flex: 1,
-    },
-    {
-      field: "fechamodificacion",
-      headerName: "Fecha Modificación",
-      renderCell: (params) => (
-        <>
-          {params.row?.fechamodificacion
-            ? new Date(params.row.fechamodificacion).toLocaleDateString("es-AR")
-            : "Sin fecha"}
-        </>
-      ),
-      flex: 1,
-    },
-
-    {
       field: "acciones",
       headerName: "Acciones",
       flex: 0.6,
@@ -107,7 +82,9 @@ export const Perfil = () => {
     if (confirmDelete && Id !== null) {
       dispatch(deletedFisico("perfil", actionCreatorMap, Id, true, false))
         .then(() => toast.error("Elemento eliminado"))
-        .catch(() => toast.error("Error al eliminar el elemento. Posible Asociación"));
+        .catch(() =>
+          toast.error("Error al eliminar el elemento. Posible Asociación"),
+        );
     }
     setId(null);
     setOpenDialog(false);

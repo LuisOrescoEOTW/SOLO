@@ -5,7 +5,10 @@ import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import { Fab, Paper, Tooltip, useTheme } from "@mui/material";
 import { Add, Delete, Edit } from "@mui/icons-material";
 import { useMemo, useState } from "react";
-import { deletedFisico } from "../../redux/slices/thunks";
+import {
+  deletedFisico,
+  deletedFisicoCompuesto,
+} from "../../redux/slices/thunks";
 import { actionCreatorMap } from "../../redux/actionCreatorMap";
 import { toast } from "react-toastify";
 import AlertDialog from "../hooks/AlertDialog";
@@ -18,7 +21,7 @@ export const Item_Perfil = () => {
   const theme = useTheme();
 
   const items_perfiles = useSelector(
-    (state: RootState) => state.item_perfil.item_perfil
+    (state: RootState) => state.item_perfil.item_perfil,
   );
 
   // Columnas
@@ -36,7 +39,7 @@ export const Item_Perfil = () => {
       flex: 1,
     },
     { field: "nivel", headerName: "Nivel", flex: 1 },
-    
+
     {
       field: "acciones",
       headerName: "Acciones",
@@ -72,7 +75,8 @@ export const Item_Perfil = () => {
               color="error"
               onClick={(e) => {
                 (e.currentTarget as HTMLButtonElement).blur();
-                setId(params.row.id);
+                setPk1(params.row.item_id);
+                setPk2(params.row.perfil_id);
                 setOpenDialog(true);
               }}
             >
@@ -91,24 +95,39 @@ export const Item_Perfil = () => {
   const [editState, setEditState] = useState<Iitem_perfil | null>(null);
 
   //Borrar
-  const [Id, setId] = useState<number | null>(null); // ID a eliminar o blanquear
+  const [Pk1, setPk1] = useState<number | null>(null); // ID a eliminar o blanquear Item
+  const [Pk2, setPk2] = useState<number | null>(null); // ID a eliminar o blanquear Perfil
   const [openDialog, setOpenDialog] = useState(false);
   const handleDialogClose = (confirmDelete: boolean) => {
-    if (confirmDelete && Id !== null) {
-      dispatch(deletedFisico("item_perfil", actionCreatorMap, Id, true, true))
+    if (confirmDelete && Pk1 !== null && Pk2 !== null) {
+      dispatch(
+        deletedFisicoCompuesto(
+          "item_perfil",
+          actionCreatorMap,
+          Pk1,
+          Pk2,
+          true,
+          true,
+        ),
+      )
         .then(() => toast.error("Elemento eliminado"))
         .catch(() => toast.error("Error al eliminar el elemento"));
     }
-    setId(null);
+    setPk1(null);
+    setPk2(null);
     setOpenDialog(false);
   };
 
-  //Otras Tablas 
+  //Otras Tablas
   const otrasTablas = useMemo(() => ["perfil", "item"], []);
 
   return (
     <>
-      <Leer tabla="item_perfil" conRelaciones={true} otrasTablas={otrasTablas} />
+      <Leer
+        tabla="item_perfil"
+        conRelaciones={true}
+        otrasTablas={otrasTablas}
+      />
       {items_perfiles && (
         <>
           <div>
@@ -125,7 +144,7 @@ export const Item_Perfil = () => {
                 borderRadius: theme.shape.borderRadius,
               }}
             >
-              <h2>Item x Perfil</h2>
+              <h2>Item - Perfil</h2>
               <div style={{ textAlign: "end" }}>
                 <Tooltip title="Agregar">
                   <Fab

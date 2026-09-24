@@ -8,11 +8,11 @@ import {
 import { Email, Lock, Visibility, VisibilityOff } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../../redux/store";
-import { loginUser } from "../../redux/slices/authThunks";
 import { Controller, useForm } from "react-hook-form";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { authLogin } from "../../redux/slices/authThunks";
 // import imagenLogin from "../images/Presentar.jpeg";
 
 interface Props {
@@ -51,11 +51,11 @@ export const LoginPageIniciar = ({
   // Submit
   const onSubmit = async (data: any) => {
     try {
-      const result = await dispatch(loginUser(data.email, data.password));
+      const result = await dispatch(authLogin(data.email, data.password));
       if (result.success) {
         if (result.cambiarPassword) {
           setEmail(result.email);
-          setPasswordTemporal(result.passwordTemporal);
+          setPasswordTemporal(result.passwordTemporal ?? "");
           onCambiarPassword();
           return;
         }

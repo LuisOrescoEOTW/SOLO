@@ -30,15 +30,15 @@ export const Sidebar = ({ collapsed, mobileOpen, onMobileClose }: Props) => {
   // Leer Sectores
   const sectoresaprobados = useSelector((state: RootState) => state.auth.user);
   useEffect(() => {
-    console.log(sectoresaprobados.sectores);
+    console.log(sectoresaprobados);
   }, [sectoresaprobados]);
 
   const drawerContent = (
     <Box>
       <Toolbar />
       <List>
-        {MenuItems.filter((item) =>
-          sectoresaprobados.sectores.includes(item.text)
+        {MenuItems.filter(
+          (item) => sectoresaprobados?.sectores?.includes(item.text) ?? false,
         ).map((item) => (
           <Tooltip
             key={item.text}
