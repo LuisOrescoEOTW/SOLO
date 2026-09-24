@@ -1,12 +1,13 @@
 import type { Iperfil } from "../Iperfil";
 
 export interface Iusuario {
-  id?: number | 0; 
-  perfil_id?: number | 0;
+  id?: number | 0;
+  perfil_id: number;
   perfil?: Iperfil | null;
-  nombre?: string | "";
-  email?: string | "";
-  telefono?: string | "";
+  nombre: string;
+  email: string;
+  telefono: string;
+  foto?: string | null;
   intentos?: number | 0;
   bloqueado?: Date | null;
   vencimiento?: Date | null;

@@ -10,8 +10,8 @@ import { deleted } from "../../redux/slices/thunks";
 import { actionCreatorMap } from "../../redux/actionCreatorMap";
 import { toast } from "react-toastify";
 import AlertDialog from "../hooks/AlertDialog";
-import { resetearPassword } from "../../redux/slices/authThunks";
 import { UsuarioForm } from "../components/UsuarioForm";
+import { authResetPassword } from "../../redux/slices/authThunks";
 
 export const Usuario = () => {
   //Leer
@@ -37,30 +37,30 @@ export const Usuario = () => {
     //   renderCell: (params) => <>{params.row?.bloqueado ? "Sí" : "No"}</>,
     //   flex: 1,
     // },
-    {
-      field: "fechacreacion",
-      headerName: "Fecha Creación",
-      renderCell: (params) => (
-        <>
-          {params.row?.fechacreacion
-            ? new Date(params.row.fechacreacion).toLocaleDateString("es-AR")
-            : "Sin fecha"}
-        </>
-      ),
-      flex: 1,
-    },
-    {
-      field: "fechamodificacion",
-      headerName: "Fecha Modificación",
-      renderCell: (params) => (
-        <>
-          {params.row?.fechamodificacion
-            ? new Date(params.row.fechamodificacion).toLocaleDateString("es-AR")
-            : "Sin fecha"}
-        </>
-      ),
-      flex: 1,
-    },
+    // {
+    //   field: "fechacreacion",
+    //   headerName: "Fecha Creación",
+    //   renderCell: (params) => (
+    //     <>
+    //       {params.row?.fechacreacion
+    //         ? new Date(params.row.fechacreacion).toLocaleDateString("es-AR")
+    //         : "Sin fecha"}
+    //     </>
+    //   ),
+    //   flex: 1,
+    // },
+    // {
+    //   field: "fechamodificacion",
+    //   headerName: "Fecha Modificación",
+    //   renderCell: (params) => (
+    //     <>
+    //       {params.row?.fechamodificacion
+    //         ? new Date(params.row.fechamodificacion).toLocaleDateString("es-AR")
+    //         : "Sin fecha"}
+    //     </>
+    //   ),
+    //   flex: 1,
+    // },
 
     {
       field: "acciones",
@@ -145,7 +145,7 @@ export const Usuario = () => {
   const [openDialogReset, setOpenDialogReset] = useState(false);
   const handleDialogCloseReset = (confirm: boolean) => {
     if (confirm && Id !== null) {
-      dispatch(resetearPassword("usuario", actionCreatorMap, Id, true))
+      dispatch(authResetPassword("usuario", actionCreatorMap, Id, true))
         .then(() => toast.success("Se realizó el reset a la contraseña"))
         .catch(() => toast.error("Error al resetear el elemento"));
     }

@@ -21,7 +21,9 @@ import { Add, Delete } from "@mui/icons-material";
 import type { Iusuario } from "../models/auth/Iusuario";
 import { put } from "../../redux/slices/thunks";
 import { actionCreatorMap } from "../../redux/actionCreatorMap";
-import { postUser } from "../../redux/slices/authThunks";
+import { authRegister } from "../../redux/slices/authThunks";
+import type { Iperfil } from "../models/Iperfil";
+// import { postUser } from "../../redux/slices/authThunks";
 
 interface Props {
   open: boolean;
@@ -39,7 +41,7 @@ export const UsuarioForm = ({ open, onClose, editState }: Props) => {
 
   // Hook useForm
   const inicialState = {
-    perfilid: 1,
+    perfil_id: 1,
     nombre: "",
     email: "",
     foto: "",
@@ -48,8 +50,8 @@ export const UsuarioForm = ({ open, onClose, editState }: Props) => {
 
   const {
     control,
-    watch,
     setValue,
+    watch,
     handleSubmit,
     formState: { errors },
     reset,
@@ -68,11 +70,11 @@ export const UsuarioForm = ({ open, onClose, editState }: Props) => {
   const onSubmit = (data: Iusuario) => {
     delete data.perfil;
     if (editState) {
-      dispatch(put("usuario", actionCreatorMap, data, true, true))
+      dispatch(put("usuario", actionCreatorMap, data.id ?? 0, data, true, true))
         .then(() => toast.info("Elemento modificado"))
         .catch(() => toast.error("Error al modificar el elemento"));
     } else {
-      dispatch(postUser("usuario", actionCreatorMap, data, true))
+      dispatch(authRegister("usuario", actionCreatorMap, data, true))
         .then(() => toast.success("Elemento agregado"))
         .catch(() => toast.error("Error al agregar el elemento"));
     }
@@ -81,7 +83,7 @@ export const UsuarioForm = ({ open, onClose, editState }: Props) => {
   };
 
   // Manejo de la imagen
-  // const imagenValue = watch("foto");
+  const imagenValue = watch("foto");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Función para manejar la selección del archivo
@@ -212,7 +214,7 @@ export const UsuarioForm = ({ open, onClose, editState }: Props) => {
 
         {/* Perfil */}
         <Controller
-          name="perfilid"
+          name="perfil_id"
           control={control}
           rules={{ required: "El perfil es obligatorio" }}
           render={({ field }) => (
@@ -228,7 +230,7 @@ export const UsuarioForm = ({ open, onClose, editState }: Props) => {
               <MenuItem value="">
                 <em>Seleccione un perfil</em>
               </MenuItem>
-              {perfiles.map((perfil) => (
+              {perfiles.map((perfil: Iperfil) => (
                 <MenuItem key={perfil.id} value={perfil.id}>
                   {perfil.nombre}
                 </MenuItem>
@@ -236,9 +238,9 @@ export const UsuarioForm = ({ open, onClose, editState }: Props) => {
             </Select>
           )}
         />
-        {errors.perfilid && (
+        {errors.perfil_id && (
           <p style={{ color: "red", fontSize: "0.8rem" }}>
-            {errors.perfilid.message}
+            {errors.perfil_id.message}
           </p>
         )}
 
