@@ -5,10 +5,7 @@ import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import { Fab, Paper, Tooltip, useTheme } from "@mui/material";
 import { Add, Delete, Edit } from "@mui/icons-material";
 import { useMemo, useState } from "react";
-import {
-  deletedFisico,
-  deletedFisicoCompuesto,
-} from "../../redux/slices/thunks";
+import { deletedFisicoCompuesto } from "../../redux/slices/thunks";
 import { actionCreatorMap } from "../../redux/actionCreatorMap";
 import { toast } from "react-toastify";
 import AlertDialog from "../hooks/AlertDialog";

@@ -51,6 +51,8 @@ export const LoginPageIniciar = ({
   // Submit
   const onSubmit = async (data: any) => {
     try {
+      // console.log(data);
+      // return;
       const result = await dispatch(authLogin(data.email, data.password));
       if (result.success) {
         if (result.cambiarPassword) {

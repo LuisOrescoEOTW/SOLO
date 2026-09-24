@@ -23,7 +23,6 @@ import { put } from "../../redux/slices/thunks";
 import { actionCreatorMap } from "../../redux/actionCreatorMap";
 import { authRegister } from "../../redux/slices/authThunks";
 import type { Iperfil } from "../models/Iperfil";
-// import { postUser } from "../../redux/slices/authThunks";
 
 interface Props {
   open: boolean;

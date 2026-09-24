@@ -18,7 +18,6 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LeerHabil } from "../hooks/LeerHabil";
 import dayjs, { Dayjs } from "dayjs";
 import { authHabilitar } from "../../redux/slices/authThunks";
-// import { putHabilFecha } from "../../redux/slices/thunks";
 
 interface Props {
   onCambiarPassword: () => void;
