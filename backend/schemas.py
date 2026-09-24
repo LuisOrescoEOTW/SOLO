@@ -89,11 +89,11 @@ class Usuario(BaseModel):
    email: EmailStr
    # password: str
    telefono: str
+   foto: Optional[str] = None
    intentos: int
    bloqueado: datetime | None = None
    borrado: bool | None = False
    perfil: Optional[Perfil] = None  # relación
-   # foto: Optional[str] = None
    # fechacreacion: datetime | None = None
    # fechamodificacion: datetime | None = None
 # -------------------------------------

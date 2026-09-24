@@ -88,6 +88,7 @@ class Usuario(Base):
    password = Column(String, nullable=False)
    email = Column(String, unique=True, nullable=False)
    telefono = Column(String, unique=True, nullable=False)
+   foto = Column(String, nullable=True)
    intentos = Column(Integer, nullable=False, server_default="0", default=0)
    bloqueado = Column(DateTime(timezone=True), nullable=True)
    vencimiento = Column(DateTime(timezone=True), nullable=True)
