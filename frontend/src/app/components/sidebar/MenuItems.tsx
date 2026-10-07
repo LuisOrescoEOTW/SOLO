@@ -44,7 +44,7 @@ export const MenuItems = [
 
   {
     text: "metodo",
-    name: "Metodo",
+    name: "Método",
     icon: <Insights />,
     path: "/metodo",
   },

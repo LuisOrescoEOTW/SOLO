@@ -1,23 +1,23 @@
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../redux/store";
-import { Fab, Paper, Tooltip, useTheme } from "@mui/material";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
+import { Fab, Paper, Tooltip, useTheme } from "@mui/material";
 import { Add, Delete, Edit } from "@mui/icons-material";
 import { useState } from "react";
-import type { Iselector } from "../models/Itablas";
+import type { Imetodo } from "../models/Itablas";
 import { deleted } from "../../redux/slices/thunks";
 import { actionCreatorMap } from "../../redux/actionCreatorMap";
 import { toast } from "react-toastify";
 import { Leer } from "../hooks/Leer";
 import AlertDialog from "../hooks/AlertDialog";
-import { SelectorForm } from "../components/SelectorForm";
+import { MetodoForm } from "../components/MetodoForm";
 
-export const Selector = () => {
+export const Metodo = () => {
   //Leer
   const dispatch = useDispatch<AppDispatch>();
   const theme = useTheme();
 
-  const selectores = useSelector((state: RootState) => state.selector.selector);
+  const metodos = useSelector((state: RootState) => state.metodo.metodo);
 
   // Columnas
   const columns: GridColDef[] = [
@@ -73,14 +73,14 @@ export const Selector = () => {
 
   // Agregar - Modificar
   const [modalAbrir, setModalAbrir] = useState(false);
-  const [editState, setEditState] = useState<Iselector | null>(null);
+  const [editState, setEditState] = useState<Imetodo | null>(null);
 
   //Borrar
   const [Id, setId] = useState<number | null>(null); // ID a eliminar o blanquear
   const [openDialog, setOpenDialog] = useState(false);
   const handleDialogClose = (confirmDelete: boolean) => {
     if (confirmDelete && Id !== null) {
-      dispatch(deleted("selector", actionCreatorMap, Id, true, true))
+      dispatch(deleted("metodo", actionCreatorMap, Id, true, true))
         .then(() => toast.error("Elemento eliminado"))
         .catch(() => toast.error("Error al eliminar el elemento"));
     }
@@ -90,8 +90,8 @@ export const Selector = () => {
 
   return (
     <>
-      <Leer tabla="selector" conRelaciones={false} otrasTablas={[]} />
-      {selectores && (
+      <Leer tabla="metodo" conRelaciones={false} otrasTablas={[]} />
+      {metodos && (
         <>
           <div>
             <div
@@ -107,7 +107,7 @@ export const Selector = () => {
                 borderRadius: theme.shape.borderRadius,
               }}
             >
-              <h2>Selector</h2>
+              <h2>Método</h2>
               <div style={{ textAlign: "end" }}>
                 <Tooltip title="Agregar">
                   <Fab
@@ -127,7 +127,7 @@ export const Selector = () => {
 
             <Paper>
               <DataGrid
-                rows={selectores}
+                rows={metodos}
                 columns={columns}
                 initialState={{
                   pagination: { paginationModel: paginationModels },
@@ -146,7 +146,7 @@ export const Selector = () => {
           </div>
 
           {/* Alta - Modificaciones */}
-          <SelectorForm
+          <MetodoForm
             open={modalAbrir}
             onClose={() => (setModalAbrir(false), setEditState(null))}
             editState={editState}

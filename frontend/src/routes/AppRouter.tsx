@@ -8,7 +8,12 @@ import { Usuario } from "../app/pages/Usuario";
 import { Perfil } from "../app/pages/Perfil";
 import { Item } from "../app/pages/Item";
 import { Item_Perfil } from "../app/pages/Item_Perfil";
+import { Metodo } from "../app/pages/Metodo";
+import { Frecuencia } from "../app/pages/Frecuencia";
+import { Bias } from "../app/pages/Bias";
+import { Funcion } from "../app/pages/Funcion";
 import { Selector } from "../app/pages/Selector";
+import { Canal } from "../app/pages/Canal";
 
 export const AppRouter = () => {
   return (
@@ -24,7 +29,12 @@ export const AppRouter = () => {
           }
         >
           <Route index element={<Inicio />} />
+          <Route path="metodo" element={<Metodo />} />
+          <Route path="frecuencia" element={<Frecuencia />} />
+          <Route path="bias" element={<Bias />} />
+          <Route path="funcion" element={<Funcion />} />
           <Route path="selector" element={<Selector />} />
+          <Route path="canal" element={<Canal />} />
 
           <Route path="usuario" element={<Usuario />} />
           <Route path="perfil" element={<Perfil />} />

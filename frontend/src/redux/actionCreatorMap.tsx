@@ -4,7 +4,16 @@ import {
   item_perfil,
   usuario,
   habil,
+  metodo,
+  frecuencia,
+  bias,
+  funcion,
   selector,
+  canal,
+  configuracion,
+  pin_gpio,
+  medicion,
+  selector_configuracion,
 } from "./slices/slice";
 
 export const actionCreatorMap = {
@@ -13,5 +22,14 @@ export const actionCreatorMap = {
   item_perfil,
   usuario,
   habil,
+  metodo,
+  frecuencia,
+  bias,
+  funcion,
   selector,
+  canal,
+  configuracion,
+  pin_gpio,
+  medicion,
+  selector_configuracion,
 };
