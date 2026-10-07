@@ -8,6 +8,7 @@ import { Usuario } from "../app/pages/Usuario";
 import { Perfil } from "../app/pages/Perfil";
 import { Item } from "../app/pages/Item";
 import { Item_Perfil } from "../app/pages/Item_Perfil";
+import { Selector } from "../app/pages/Selector";
 
 export const AppRouter = () => {
   return (
@@ -23,6 +24,8 @@ export const AppRouter = () => {
           }
         >
           <Route index element={<Inicio />} />
+          <Route path="selector" element={<Selector />} />
+
           <Route path="usuario" element={<Usuario />} />
           <Route path="perfil" element={<Perfil />} />
           <Route path="item" element={<Item />} />

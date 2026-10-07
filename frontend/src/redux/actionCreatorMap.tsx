@@ -4,6 +4,7 @@ import {
   item_perfil,
   usuario,
   habil,
+  selector,
 } from "./slices/slice";
 
 export const actionCreatorMap = {
@@ -12,4 +13,5 @@ export const actionCreatorMap = {
   item_perfil,
   usuario,
   habil,
+  selector,
 };

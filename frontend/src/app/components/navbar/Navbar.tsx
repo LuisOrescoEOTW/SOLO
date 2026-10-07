@@ -89,21 +89,24 @@ export const Navbar = ({ onToggleSidebar, onMobileOpen }: Props) => {
               </IconButton>
 
               <Typography
-                variant="h5"
+                variant="h6"
                 noWrap
                 sx={{
                   flexGrow: 1,
-                  fontWeight: "bold"
+                  fontWeight: "bold",
                 }}
               >
-                Sistema de Gestión
+                Sistema Tomografía por Bioimpedancia
               </Typography>
 
               {habil &&
                 dayjs(habil.vencimiento)
                   .startOf("day")
                   .isBefore(dayjs().startOf("day")) && (
-                  <Typography variant="h6" color="error" >La licencia del producto ha vencido!. Contacte al administrador.</Typography>
+                  <Typography variant="h6" color="error">
+                    La licencia del producto ha vencido!. Contacte al
+                    administrador.
+                  </Typography>
                 )}
 
               <IconButton color="inherit" onClick={colorMode.toggleColorMode}>

@@ -13,7 +13,6 @@ import { Link } from "react-router-dom";
 import { MenuItems } from "./MenuItems";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../../redux/store";
-import { useEffect } from "react";
 
 const drawerWidth = 240;
 const collapsedWidth = 70;
@@ -29,9 +28,6 @@ export const Sidebar = ({ collapsed, mobileOpen, onMobileClose }: Props) => {
 
   // Leer Sectores
   const sectoresaprobados = useSelector((state: RootState) => state.auth.user);
-  useEffect(() => {
-    console.log(sectoresaprobados);
-  }, [sectoresaprobados]);
 
   const drawerContent = (
     <Box>
@@ -42,7 +38,7 @@ export const Sidebar = ({ collapsed, mobileOpen, onMobileClose }: Props) => {
         ).map((item) => (
           <Tooltip
             key={item.text}
-            title={collapsed ? item.text : ""}
+            title={collapsed ? item.name : ""}
             placement="right"
             arrow
           >

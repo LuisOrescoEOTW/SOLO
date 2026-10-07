@@ -65,8 +65,21 @@ export const habilSlice = createSlice({
   },
 });
 
+export const selectorSlice = createSlice({
+  name: "selector",
+  initialState: {
+    selector: [] as Iselector[],
+  },
+  reducers: {
+    selector: (state, action) => {
+      state.selector = action.payload.selector;
+    },
+  },
+});
+
 export const { perfil } = perfilSlice.actions;
 export const { item } = itemSlice.actions;
 export const { item_perfil } = item_perfilSlice.actions;
 export const { usuario } = usuarioSlice.actions;
 export const { habil } = habilSlice.actions;
+export const { selector } = selectorSlice.actions;
