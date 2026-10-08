@@ -33,8 +33,8 @@ export const Item_PerfilForm = ({ open, onClose, editState }: Props) => {
 
   // Hook useForm
   const inicialState = {
-    perfilid: perfiles && perfiles.length > 0 ? perfiles[0].id : 1,
-    itemid: items && items.length > 0 ? items[0].id : 1,
+    perfilid: perfiles[0]?.id ?? 1,
+    itemid: items[0]?.id ?? 1,
     nivel: 1,
   };
 

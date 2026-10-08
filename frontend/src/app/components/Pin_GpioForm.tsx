@@ -34,7 +34,7 @@ export const Pin_GpioForm = ({ open, onClose, editState }: Props) => {
 
   // Hook useForm
   const inicialState = {
-    selector_id: 1,
+    selector_id: selectores[0]?.id ?? 1,
     pin_ms: 1,
     pin_rb: 1,
     gpio_rb: 1,

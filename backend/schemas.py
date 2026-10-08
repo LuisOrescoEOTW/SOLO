@@ -105,6 +105,7 @@ class Configuracion(BaseModel):
    bias_id: int  # clave foránea
    funcion_id: int  # clave foránea
    usuario_id: int  # clave foránea
+   nombre: str
    frecuencia_inicial: int
    frecuencia_cantidad: int
    frecuencia_final: int

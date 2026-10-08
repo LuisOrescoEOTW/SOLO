@@ -49,6 +49,7 @@ export interface Iconfiguracion {
   funcion?: Ifuncion | null;
   usuario_id: number;
   usuario?: Iusuario | null;
+  nombre: string;
   frecuencia_inicial: number;
   frecuencia_cantidad: number;
   frecuencia_final: number;

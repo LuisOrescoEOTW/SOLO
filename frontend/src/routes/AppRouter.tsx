@@ -15,6 +15,7 @@ import { Funcion } from "../app/pages/Funcion";
 import { Selector } from "../app/pages/Selector";
 import { Canal } from "../app/pages/Canal";
 import { Pin_Gpio } from "../app/pages/Pin_Gpio";
+import { Configuracion } from "../app/pages/Configuracion";
 
 export const AppRouter = () => {
   return (
@@ -37,6 +38,7 @@ export const AppRouter = () => {
           <Route path="selector" element={<Selector />} />
           <Route path="canal" element={<Canal />} />
           <Route path="pin_gpio" element={<Pin_Gpio />} />
+          <Route path="configuracion" element={<Configuracion />} />
 
           <Route path="usuario" element={<Usuario />} />
           <Route path="perfil" element={<Perfil />} />

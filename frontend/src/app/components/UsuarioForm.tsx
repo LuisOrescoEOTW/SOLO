@@ -40,7 +40,7 @@ export const UsuarioForm = ({ open, onClose, editState }: Props) => {
 
   // Hook useForm
   const inicialState = {
-    perfil_id: 1,
+    perfil_id: perfiles[0]?.id ?? 1,
     nombre: "",
     email: "",
     foto: "",

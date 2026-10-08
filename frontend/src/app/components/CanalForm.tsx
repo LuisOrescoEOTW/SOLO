@@ -34,7 +34,7 @@ export const CanalForm = ({ open, onClose, editState }: Props) => {
 
   // Hook useForm
   const inicialState = {
-    metodo_id: 1,
+    metodo_id: metodos[0]?.id ?? 1,
     nombre: "",
     inyeccion1: 1,
     inyeccion2: 1,

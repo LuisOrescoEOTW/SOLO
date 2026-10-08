@@ -105,6 +105,7 @@ class Configuracion(Base):
    bias_id = Column(Integer, ForeignKey("public.bias.id", ondelete="RESTRICT"), nullable=False)  # clave foránea
    funcion_id = Column(Integer, ForeignKey("public.funcion.id", ondelete="RESTRICT"), nullable=False)  # clave foránea
    usuario_id = Column(Integer, ForeignKey("public.usuario.id", ondelete="RESTRICT"), nullable=False)  # clave foránea
+   nombre = Column(String, unique=True, nullable=False)
    frecuencia_inicial = Column(Integer, nullable=False)
    frecuencia_cantidad = Column(Integer, nullable=False)
    frecuencia_final = Column(Integer, nullable=False)
