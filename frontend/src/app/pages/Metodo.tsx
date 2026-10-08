@@ -5,7 +5,7 @@ import { Fab, Paper, Tooltip, useTheme } from "@mui/material";
 import { Add, Delete, Edit } from "@mui/icons-material";
 import { useState } from "react";
 import type { Imetodo } from "../models/Itablas";
-import { deleted } from "../../redux/slices/thunks";
+import { deletedFisico } from "../../redux/slices/thunks";
 import { actionCreatorMap } from "../../redux/actionCreatorMap";
 import { toast } from "react-toastify";
 import { Leer } from "../hooks/Leer";
@@ -80,7 +80,7 @@ export const Metodo = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const handleDialogClose = (confirmDelete: boolean) => {
     if (confirmDelete && Id !== null) {
-      dispatch(deleted("metodo", actionCreatorMap, Id, true, true))
+      dispatch(deletedFisico("metodo", actionCreatorMap, Id, true, true))
         .then(() => toast.error("Elemento eliminado"))
         .catch(() => toast.error("Error al eliminar el elemento"));
     }

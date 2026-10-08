@@ -5,7 +5,7 @@ import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import { Add, Delete, Edit } from "@mui/icons-material";
 import { useState } from "react";
 import type { Icanal } from "../models/Itablas";
-import { deleted } from "../../redux/slices/thunks";
+import { deletedFisico } from "../../redux/slices/thunks";
 import { actionCreatorMap } from "../../redux/actionCreatorMap";
 import { toast } from "react-toastify";
 import { Leer } from "../hooks/Leer";
@@ -91,7 +91,7 @@ export const Canal = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const handleDialogClose = (confirmDelete: boolean) => {
     if (confirmDelete && Id !== null) {
-      dispatch(deleted("canal", actionCreatorMap, Id, true, true))
+      dispatch(deletedFisico("canal", actionCreatorMap, Id, true, true))
         .then(() => toast.error("Elemento eliminado"))
         .catch(() => toast.error("Error al eliminar el elemento"));
     }

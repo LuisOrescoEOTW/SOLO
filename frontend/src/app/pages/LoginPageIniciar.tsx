@@ -5,7 +5,14 @@ import {
   IconButton,
   InputAdornment,
 } from "@mui/material";
-import { Email, Lock, Visibility, VisibilityOff } from "@mui/icons-material";
+import {
+  ElectricBolt,
+  Email,
+  Lock,
+  Visibility,
+  VisibilityOff,
+  WaterfallChart,
+} from "@mui/icons-material";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../../redux/store";
 import { Controller, useForm } from "react-hook-form";
@@ -72,6 +79,18 @@ export const LoginPageIniciar = ({
 
   return (
     <>
+      <Typography
+        variant="h6"
+        sx={{
+          m: 1,
+          textAlign: "center",
+          color: "primary.main",
+          spacing: 1,
+          fontWeight: "bold",
+        }}
+      >
+        <ElectricBolt /> Sistema de Tomografía por Bioimpedancia
+      </Typography>
       <Typography
         variant="h6"
         sx={{ fontWeight: "bold", m: 2, textAlign: "center" }}

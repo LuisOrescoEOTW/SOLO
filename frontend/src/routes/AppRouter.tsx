@@ -14,6 +14,7 @@ import { Bias } from "../app/pages/Bias";
 import { Funcion } from "../app/pages/Funcion";
 import { Selector } from "../app/pages/Selector";
 import { Canal } from "../app/pages/Canal";
+import { Pin_Gpio } from "../app/pages/Pin_Gpio";
 
 export const AppRouter = () => {
   return (
@@ -35,6 +36,7 @@ export const AppRouter = () => {
           <Route path="funcion" element={<Funcion />} />
           <Route path="selector" element={<Selector />} />
           <Route path="canal" element={<Canal />} />
+          <Route path="pin_gpio" element={<Pin_Gpio />} />
 
           <Route path="usuario" element={<Usuario />} />
           <Route path="perfil" element={<Perfil />} />

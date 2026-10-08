@@ -174,7 +174,7 @@ export const LoginPage = () => {
             fontWeight: "bold",
           }}
         >
-          @ by Luis Orescovich
+          @ LEAB - UNTDF - USHUAIA - 2026
         </Typography>
       </Box>
     </Box>

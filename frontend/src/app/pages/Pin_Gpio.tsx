@@ -4,27 +4,36 @@ import { Fab, Paper, Tooltip, useTheme } from "@mui/material";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import { Add, Delete, Edit } from "@mui/icons-material";
 import { useState } from "react";
-import type { Ifrecuencia } from "../models/Itablas";
+import type { Ipin_gpio } from "../models/Itablas";
 import { deletedFisico } from "../../redux/slices/thunks";
 import { actionCreatorMap } from "../../redux/actionCreatorMap";
 import { toast } from "react-toastify";
 import { Leer } from "../hooks/Leer";
 import AlertDialog from "../hooks/AlertDialog";
-import { FrecuenciaForm } from "../components/FrecuenciaForm";
+import { Pin_GpioForm } from "../components/Pin_GpioForm";
 
-export const Frecuencia = () => {
+export const Pin_Gpio = () => {
   //Leer
   const dispatch = useDispatch<AppDispatch>();
   const theme = useTheme();
 
-  const frecuencias = useSelector(
-    (state: RootState) => state.frecuencia.frecuencia,
+  const pines_gpios = useSelector(
+    (state: RootState) => state.pin_gpio.pin_gpio,
   );
 
   // Columnas
   const columns: GridColDef[] = [
-    { field: "nombre", headerName: "Nombre", flex: 1 },
-    { field: "tipo", headerName: "Tipo", flex: 1 },
+    {
+      field: "selector.nombre",
+      headerName: "Selector",
+      flex: 1,
+      renderCell: (params) => (
+        <>{params.row?.selector?.nombre ?? "Sin selector"}</>
+      ),
+    },
+    { field: "pin_ms", headerName: "Pin MS", flex: 1 },
+    { field: "pin_rb", headerName: "Pin RB", flex: 1 },
+    { field: "gpio_rb", headerName: "Gpio RB", flex: 1 },
     {
       field: "acciones",
       headerName: "Acciones",
@@ -76,14 +85,14 @@ export const Frecuencia = () => {
 
   // Agregar - Modificar
   const [modalAbrir, setModalAbrir] = useState(false);
-  const [editState, setEditState] = useState<Ifrecuencia | null>(null);
+  const [editState, setEditState] = useState<Ipin_gpio | null>(null);
 
   //Borrar
   const [Id, setId] = useState<number | null>(null); // ID a eliminar o blanquear
   const [openDialog, setOpenDialog] = useState(false);
   const handleDialogClose = (confirmDelete: boolean) => {
     if (confirmDelete && Id !== null) {
-      dispatch(deletedFisico("frecuencia", actionCreatorMap, Id, true, true))
+      dispatch(deletedFisico("pin_gpio", actionCreatorMap, Id, true, true))
         .then(() => toast.error("Elemento eliminado"))
         .catch(() => toast.error("Error al eliminar el elemento"));
     }
@@ -93,8 +102,8 @@ export const Frecuencia = () => {
 
   return (
     <>
-      <Leer tabla="frecuencia" conRelaciones={false} otrasTablas={[]} />
-      {frecuencias && (
+      <Leer tabla="pin_gpio" conRelaciones={true} otrasTablas={["selector"]} />
+      {pines_gpios && (
         <>
           <div>
             <div
@@ -110,7 +119,7 @@ export const Frecuencia = () => {
                 borderRadius: theme.shape.borderRadius,
               }}
             >
-              <h2>Frecuencia</h2>
+              <h2>Pin Gpio</h2>
               <div style={{ textAlign: "end" }}>
                 <Tooltip title="Agregar">
                   <Fab
@@ -130,7 +139,7 @@ export const Frecuencia = () => {
 
             <Paper>
               <DataGrid
-                rows={frecuencias}
+                rows={pines_gpios}
                 columns={columns}
                 initialState={{
                   pagination: { paginationModel: paginationModels },
@@ -149,7 +158,7 @@ export const Frecuencia = () => {
           </div>
 
           {/* Alta - Modificaciones */}
-          <FrecuenciaForm
+          <Pin_GpioForm
             open={modalAbrir}
             onClose={() => (setModalAbrir(false), setEditState(null))}
             editState={editState}
