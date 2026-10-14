@@ -74,29 +74,60 @@ export const MenuItems = [
     divider: true,
   },
 
+  // {
+  //   text: "usuario",
+  //   name: "Usuario",
+  //   icon: <Person />,
+  //   path: "/usuario",
+  // },
+  // {
+  //   text: "perfil",
+  //   name: "Perfil",
+  //   icon: <Accessibility />,
+  //   path: "/perfil",
+  // },
+  // {
+  //   text: "item",
+  //   name: "Item",
+  //   icon: <Key />,
+  //   path: "/item",
+  // },
+  // {
+  //   text: "item_perfil",
+  //   name: "Asociar",
+  //   icon: <Sync />,
+  //   path: "/item_perfil",
+  // },
+  // Aquí agregar nueva tabla
   {
     text: "usuario",
-    name: "Usuario",
+    name: "Usuarios",
     icon: <Person />,
-    path: "/usuario",
+    children: [
+      {
+        text: "usuario",
+        name: "Usuario",
+        icon: <Person />,
+        path: "/usuario",
+      },
+      {
+        text: "perfil",
+        name: "Perfil",
+        icon: <Accessibility />,
+        path: "/perfil",
+      },
+      {
+        text: "item",
+        name: "Item",
+        icon: <Key />,
+        path: "/item",
+      },
+      {
+        text: "item_perfil",
+        name: "Asociar",
+        icon: <Sync />,
+        path: "/item_perfil",
+      },
+    ],
   },
-  {
-    text: "perfil",
-    name: "Perfil",
-    icon: <Accessibility />,
-    path: "/perfil",
-  },
-  {
-    text: "item",
-    name: "Item",
-    icon: <Key />,
-    path: "/item",
-  },
-  {
-    text: "item_perfil",
-    name: "Asociar",
-    icon: <Sync />,
-    path: "/item_perfil",
-  },
-  // Aquí agregar nueva tabla
 ];

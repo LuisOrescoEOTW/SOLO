@@ -96,7 +96,7 @@ export const Navbar = ({ onToggleSidebar, onMobileOpen }: Props) => {
                   fontWeight: "bold",
                 }}
               >
-                Sistema Tomografía por Bioimpedancia
+                Sistema de Tomografía por Bioimpedancia
               </Typography>
 
               {habil &&

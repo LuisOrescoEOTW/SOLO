@@ -25,9 +25,10 @@ export const Selector = () => {
     {
       field: "acciones",
       headerName: "Acciones",
-      flex: 0.6,
+      flex: 0.1,
       sortable: false,
       filterable: false,
+      headerAlign: "center",
       renderCell: (params) => (
         <div
           style={{

@@ -28,9 +28,10 @@ export const Frecuencia = () => {
     {
       field: "acciones",
       headerName: "Acciones",
-      flex: 0.6,
+      flex: 0.2,
       sortable: false,
       filterable: false,
+      headerAlign: "center",
       renderCell: (params) => (
         <div
           style={{

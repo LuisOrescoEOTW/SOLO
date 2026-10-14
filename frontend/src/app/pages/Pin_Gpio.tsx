@@ -37,9 +37,10 @@ export const Pin_Gpio = () => {
     {
       field: "acciones",
       headerName: "Acciones",
-      flex: 0.6,
+      flex: 0.4,
       sortable: false,
       filterable: false,
+      headerAlign: "center",
       renderCell: (params) => (
         <div
           style={{

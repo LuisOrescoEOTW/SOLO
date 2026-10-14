@@ -35,13 +35,13 @@ export const Configuracion = () => {
     {
       field: "bias.valor",
       headerName: "Bias",
-      flex: 1,
+      flex: 0.6,
       renderCell: (params) => <>{params.row?.bias?.valor ?? "Sin bias"}</>,
     },
     {
       field: "funcion.nombre",
       headerName: "Función",
-      flex: 1,
+      flex: 0.8,
       renderCell: (params) => (
         <>{params.row?.funcion?.nombre ?? "Sin función"}</>
       ),
@@ -61,11 +61,11 @@ export const Configuracion = () => {
       flex: 1,
     },
     { field: "frecuencia_final", headerName: "Frecuencia Final", flex: 1 },
-    { field: "voltaje", headerName: "Voltaje", flex: 1 },
+    { field: "voltaje", headerName: "Voltaje", flex: 0.6 },
     {
       field: "acciones",
       headerName: "Acciones",
-      flex: 0.6,
+      flex: 0.7,
       sortable: false,
       filterable: false,
       renderCell: (params) => (

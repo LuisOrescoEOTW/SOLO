@@ -28,17 +28,18 @@ export const Canal = () => {
       renderCell: (params) => <>{params.row?.metodo?.nombre ?? "Sin método"}</>,
     },
     { field: "nombre", headerName: "Nombre", flex: 1 },
-    { field: "inyeccion1", headerName: "Inyección 1", flex: 1 },
-    { field: "inyeccion2", headerName: "Inyección 2", flex: 1 },
-    { field: "medicion1", headerName: "Medición 1", flex: 1 },
-    { field: "medicion2", headerName: "Medición 2", flex: 1 },
-    { field: "habilitado", headerName: "Habilitado", flex: 1 },
+    { field: "inyeccion1", headerName: "Inyección 1", flex: 0.8 },
+    { field: "inyeccion2", headerName: "Inyección 2", flex: 0.8 },
+    { field: "medicion1", headerName: "Medición 1", flex: 0.8 },
+    { field: "medicion2", headerName: "Medición 2", flex: 0.8 },
+    { field: "habilitado", headerName: "Habilitado", flex: 0.8 },
     {
       field: "acciones",
       headerName: "Acciones",
       flex: 0.6,
       sortable: false,
       filterable: false,
+      headerAlign: "center",
       renderCell: (params) => (
         <div
           style={{
