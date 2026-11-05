@@ -76,8 +76,8 @@ export const CanalForm = ({ open, onClose, editState }: Props) => {
       dispatch(post("canal", actionCreatorMap, data, true, true))
         .then(() => {
           toast.success("Elemento agregado");
-          reset(inicialState);
-          onClose();
+          // reset(inicialState);
+          // onClose();
         })
         .catch(() =>
           toast.error("Error al agregar el elemento. Posible duplicado"),

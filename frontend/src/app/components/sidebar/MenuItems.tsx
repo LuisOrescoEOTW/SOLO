@@ -1,5 +1,6 @@
 import {
   Accessibility,
+  Contactless,
   ElectricalServices,
   ElectricBolt,
   ForkRight,
@@ -16,6 +17,12 @@ import {
 
 // divider en true coloca una linea debajo
 export const MenuItems = [
+  {
+    text: "play",
+    name: "Play",
+    icon: <Contactless />,
+    path: "/play",
+  },
   {
     text: "medicion",
     name: "Medición",
@@ -74,31 +81,6 @@ export const MenuItems = [
     divider: true,
   },
 
-  // {
-  //   text: "usuario",
-  //   name: "Usuario",
-  //   icon: <Person />,
-  //   path: "/usuario",
-  // },
-  // {
-  //   text: "perfil",
-  //   name: "Perfil",
-  //   icon: <Accessibility />,
-  //   path: "/perfil",
-  // },
-  // {
-  //   text: "item",
-  //   name: "Item",
-  //   icon: <Key />,
-  //   path: "/item",
-  // },
-  // {
-  //   text: "item_perfil",
-  //   name: "Asociar",
-  //   icon: <Sync />,
-  //   path: "/item_perfil",
-  // },
-  // Aquí agregar nueva tabla
   {
     text: "usuario",
     name: "Usuarios",

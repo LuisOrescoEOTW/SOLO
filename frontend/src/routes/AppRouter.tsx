@@ -17,6 +17,7 @@ import { Canal } from "../app/pages/Canal";
 import { Pin_Gpio } from "../app/pages/Pin_Gpio";
 import { Configuracion } from "../app/pages/Configuracion";
 import { Medicion } from "../app/pages/Medicion";
+import { Play } from "../app/pages/Play";
 
 export const AppRouter = () => {
   return (
@@ -41,6 +42,7 @@ export const AppRouter = () => {
           <Route path="pin_gpio" element={<Pin_Gpio />} />
           <Route path="configuracion" element={<Configuracion />} />
           <Route path="medicion" element={<Medicion />} />
+          <Route path="play" element={<Play />} />
 
           <Route path="usuario" element={<Usuario />} />
           <Route path="perfil" element={<Perfil />} />

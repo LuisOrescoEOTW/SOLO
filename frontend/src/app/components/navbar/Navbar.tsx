@@ -125,11 +125,11 @@ export const Navbar = ({ onToggleSidebar, onMobileOpen }: Props) => {
                 <LogoutOutlined />
               </Button>
 
-              {habil && (
+              {/* {habil && (
                 <Typography>
                   Vence: {dayjs(habil.vencimiento).format("DD/MM/YYYY")}
                 </Typography>
-              )}
+              )} */}
             </Toolbar>
 
             {/* Modal Confirma Cerrar Sesión */}

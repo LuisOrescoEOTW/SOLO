@@ -6,6 +6,6 @@ import { defineConfig } from "vite";
 export default defineConfig({
   plugins: [react(), babel({ presets: [reactCompilerPreset()] })],
   server: {
-    port: 8080, // <- agrega esto. Escucha al Back
+    port: 7081, // <- agrega esto. Escucha al Back
   },
 });

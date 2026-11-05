@@ -6,7 +6,7 @@ import { Add, Delete, Edit } from "@mui/icons-material";
 import { useState } from "react";
 import type { Imedicion } from "../models/Itablas";
 import { actionCreatorMap } from "../../redux/actionCreatorMap";
-import { deleted } from "../../redux/slices/thunks";
+import { deletedFisico } from "../../redux/slices/thunks";
 import { toast } from "react-toastify";
 import { Leer } from "../hooks/Leer";
 import AlertDialog from "../hooks/AlertDialog";
@@ -124,7 +124,7 @@ export const Medicion = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const handleDialogClose = (confirmDelete: boolean) => {
     if (confirmDelete && Id !== null) {
-      dispatch(deleted("medicion", actionCreatorMap, Id, true, true))
+      dispatch(deletedFisico("medicion", actionCreatorMap, Id, true, true))
         .then(() => toast.error("Elemento eliminado"))
         .catch(() => toast.error("Error al eliminar el elemento"));
     }
