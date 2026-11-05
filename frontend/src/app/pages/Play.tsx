@@ -11,7 +11,7 @@ import {
   Button,
   Divider,
   CircularProgress,
-  IconButton,
+  Tooltip,
 } from "@mui/material";
 import {
   PlayArrow,
@@ -20,30 +20,28 @@ import {
   SaveAlt,
   CheckCircle,
   Contactless,
+  FileDownload,
 } from "@mui/icons-material";
 import { useCargaInicial } from "../hooks/useCargaInicial";
 import { useEffect, useState, useRef } from "react";
-import { getByCampoValor, vaciar } from "../../redux/slices/thunks";
+import { getByCampoValor, multipost, vaciar } from "../../redux/slices/thunks";
 import { actionCreatorMap } from "../../redux/actionCreatorMap";
+import { toast } from "react-toastify";
+import type { Imedicion } from "../models/Itablas";
+import { useExcelExport } from "../hooks/useExcelExport";
 
 export const Play = () => {
   const dispatch = useDispatch<AppDispatch>();
   const theme = useTheme();
-  //Leer
+
   useCargaInicial(["metodo", { tabla: "configuracion", conRelaciones: true }]);
 
-  //Leer
-  useCargaInicial(["metodo", { tabla: "configuracion", conRelaciones: true }]);
-
-  // Tabla General
-  const mediciones = useSelector((state: RootState) => state.medicion.medicion);
-
-  // Tablas Relacionadas. De selección
   const metodos = useSelector((state: RootState) => state.metodo.metodo);
   const canales = useSelector((state: RootState) => state.canal.canal);
   const configuraciones = useSelector(
     (state: RootState) => state.configuracion.configuracion,
   );
+
   // Filtro Canales por Método
   const [filtroCanales, setFiltroCanales] = useState<any>(null);
   useEffect(() => {
@@ -51,7 +49,7 @@ export const Play = () => {
       setFiltroCanales(metodos[0]);
     }
     if (filtroCanales?.id) {
-      dispatch(vaciar("canal", actionCreatorMap) as any); // Vaciar la tabla de canales antes de buscar nuevos
+      dispatch(vaciar("canal", actionCreatorMap) as any);
       dispatch(vaciar("medicion", actionCreatorMap) as any);
       dispatch(
         getByCampoValor(
@@ -64,11 +62,6 @@ export const Play = () => {
     }
   }, [metodos, filtroCanales]);
 
-  useEffect(() => {
-    console.log("Canales actualizados:", canales);
-  }, [canales]);
-
-  // Selecciono Configuración por defecto
   const [configuracionSeleccionada, setConfiguracionSeleccionada] =
     useState<any>(null);
   useEffect(() => {
@@ -77,83 +70,199 @@ export const Play = () => {
     }
   }, [configuraciones, configuracionSeleccionada]);
 
-  useEffect(() => {
-    console.log("Configuración seleccionada:", configuracionSeleccionada);
-  }, [configuracionSeleccionada]);
-
-  // Columnas
   const columns: GridColDef[] = [
-    {
-      field: "canal",
-      headerName: "Canal",
-      flex: 1,
-      renderCell: (params) => <>{params.row?.canal?.nombre ?? "-"}</>,
-    },
+    { field: "id", headerName: "Id", flex: 1 },
     { field: "valor", headerName: "Valor", flex: 1 },
     { field: "complemento", headerName: "Complemento", flex: 1 },
     { field: "estado", headerName: "Estado", flex: 1 },
     { field: "rango", headerName: "Rango", flex: 1 },
     { field: "frecuencia", headerName: "Frecuencia", flex: 1 },
+    { field: "canal", headerName: "Canal", flex: 1 },
+    { field: "inyeccion1", headerName: "I1", flex: 1 },
+    { field: "inyeccion2", headerName: "I2", flex: 1 },
+    { field: "medicion1", headerName: "M1", flex: 1 },
+    { field: "medicion2", headerName: "M2", flex: 1 },
   ];
-  const paginationModels = { page: 0, pageSize: 50 };
+  const paginationModels = { page: 0, pageSize: 5 };
 
   useEffect(() => {
     dispatch(vaciar("medicion", actionCreatorMap) as any);
     dispatch(vaciar("canal", actionCreatorMap) as any);
   }, []);
 
-  //Configuración
+  const [medicionesTomadas, setMedicionesTomadas] = useState<any[]>([]);
+  const [corriendo, setCorriendo] = useState(false);
+  const [pausado, setPausado] = useState(false);
 
-  const [medicionesLive, setMedicionesLive] = useState<any[]>([]);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
-  const abortRef = useRef<AbortController | null>(null);
-  const pausedRef = useRef(false);
+  const abortarRef = useRef<AbortController | null>(null);
+  const pausaRef = useRef(false);
+  const indiceRef = useRef(0);
 
   const total = canales.length || 0;
-  const actual = medicionesLive.length;
+  const actual = medicionesTomadas.length;
 
-  const handleIniciar = async () => {
-    if (!canales.length) return;
-    setIsPlaying(true);
-    setIsPaused(false);
-    pausedRef.current = false;
-    abortRef.current = new AbortController();
+  // Recorrido con el indice guardado
+  const correr = async (startIndex: number) => {
+    for (let i = startIndex; i < canales.length; i++) {
+      if (abortarRef.current?.signal.aborted) break;
 
-    for (let i = 0; i < canales.length; i++) {
-      if (abortRef.current.signal.aborted) break;
-      while (pausedRef.current) await new Promise((r) => setTimeout(r, 300));
+      // Si está pausado, esperar
+      while (pausaRef.current) {
+        if (abortarRef.current?.signal.aborted) break;
+        await new Promise((r) => setTimeout(r, 200));
+      }
+      if (abortarRef.current?.signal.aborted) break;
 
       const canal = canales[i];
       const data = {
-        id: Date.now() + i,
-        canal: canal.nombre ?? `Canal ${canal.id}`,
-        valor: (Math.random() * 9999).toFixed(2),
-        complemento: "89657.34",
+        id: i,
+        valor: Number((Math.random() * 9999).toFixed(2)),
+        complemento: 89657.34,
         estado: 1,
         rango: 0,
         frecuencia: 20,
-        inyeccion_1: 1,
-        inyeccion_2: i + 1,
-        medicion_1: 1,
-        medicion_2: i + 1,
+        canal_id: canal.id,
+        canal: canal.nombre,
+        inyeccion1: canal.inyeccion1,
+        inyeccion2: canal.inyeccion2,
+        medicion1: canal.medicion1,
+        medicion2: canal.medicion2,
       };
+
       await new Promise((r) => setTimeout(r, 150));
-      setMedicionesLive((prev) => [...prev, data]);
+      setMedicionesTomadas((prev) => [...prev, data]);
+      indiceRef.current = i + 1;
+
+      if (indiceRef.current >= canales.length) {
+        break; // llegamos al final, no seguir
+      }
     }
-    setIsPlaying(false);
+    setCorriendo(false);
+    setPausado(false);
+    pausaRef.current = false;
   };
 
-  const handleDetener = () => {
-    pausedRef.current = !pausedRef.current;
-    setIsPaused(pausedRef.current);
+  // Iniciar
+  const handleIniciar = () => {
+    if (!canales.length) return;
+    if (corriendo && !pausado) return; // ya está corriendo
+
+    // Si estaba pausado reanudar
+    if (pausado) {
+      pausaRef.current = false;
+      setPausado(false);
+      setCorriendo(true);
+      return;
+    }
+    // Si ya terminó todo, reiniciar
+    if (indiceRef.current >= canales.length) {
+      indiceRef.current = 0;
+      setMedicionesTomadas([]);
+    }
+
+    setCorriendo(true);
+    setPausado(false);
+    pausaRef.current = false;
+    abortarRef.current = new AbortController();
+    correr(indiceRef.current);
   };
 
+  // Pausar
+  const handleTogglePause = () => {
+    if (!corriendo && !pausado) return;
+    const nuevoEstado = !pausado;
+    pausaRef.current = nuevoEstado;
+    setPausado(nuevoEstado);
+  };
+
+  // Parar
   const handleParar = () => {
-    abortRef.current?.abort();
-    setIsPlaying(false);
-    setIsPaused(false);
+    abortarRef.current?.abort();
+    pausaRef.current = false;
+    setCorriendo(false);
+    setPausado(false);
+    indiceRef.current = 0;
+    setMedicionesTomadas([]);
   };
+
+  // Guardar
+  const handleGuardar = () => {
+    const data: Imedicion[] = medicionesTomadas.map((m) => ({
+      canal_id: m.canal_id,
+      configuracion_id: configuracionSeleccionada?.id,
+      valor: m.valor,
+      complemento: m.complemento,
+      estado: m.estado,
+      rango: m.rango,
+      frecuencia: m.frecuencia,
+    }));
+    dispatch(multipost("medicion", actionCreatorMap, data, false, false))
+      .then(() => {
+        toast.success("Mediciones guardadas");
+        handleParar();
+      })
+      .catch(() => toast.error("Error al agregar. Posible duplicado"));
+  };
+
+  //Enviar Excel
+  const { exportFromArrays } = useExcelExport();
+  const enviarExcel = () => {
+    // 1. Encabezado
+    const headers = [
+      "Id",
+      "Valor",
+      "Complemento",
+      "Estado",
+      "Rango",
+      "Frecuencia",
+      "Canal",
+      "Inyeccion1",
+      "Inyeccion2",
+      "Medicion1",
+      "Medicion2",
+      "Método",
+      "Configuración",
+      "Frecuencia",
+      "Bias",
+      "Función",
+      "Frecuencia Inicial",
+      "Frecuencia Final",
+      "Frecuencia Cantidad",
+      "Voltaje",
+      "Fecha",
+    ];
+    // 2. Filas
+    const dia = new Date().toLocaleDateString("es-AR");
+    const rows = (medicionesTomadas || []).map((r: any) => [
+      r.id ?? "-",
+      r.valor ?? "-",
+      r.complemento ?? "-",
+      r.estado ?? "-",
+      r.rango ?? "-",
+      r.frecuencia ?? "-",
+      r.canal ?? "-",
+      r.inyeccion1 ?? "-",
+      r.inyeccion2 ?? "-",
+      r.medicion1 ?? "-",
+      r.medicion2 ?? "-",
+      filtroCanales.nombre ?? "-",
+      configuracionSeleccionada.nombre ?? "-",
+      configuracionSeleccionada.frecuencia.nombre ?? "-",
+      configuracionSeleccionada.bias.valor ?? "-",
+      configuracionSeleccionada.funcion.nombre ?? "-",
+      configuracionSeleccionada.frecuencia_inicial ?? "-",
+      configuracionSeleccionada.frecuencia_final ?? "-",
+      configuracionSeleccionada.frecuencia_cantidad ?? "-",
+      configuracionSeleccionada.voltaje ?? "-",
+      dia,
+    ]);
+
+    exportFromArrays(headers, rows, "Mediciones");
+  };
+
+  useEffect(() => {
+    handleParar();
+  }, [filtroCanales?.id]);
 
   const cardStyle = {
     borderRadius: `${theme.shape.borderRadius}px`,
@@ -174,12 +283,17 @@ export const Play = () => {
           borderRadius: `${theme.shape.borderRadius}px`,
           py: 1.5,
           px: 2.5,
+          justifyContent: "space-between",
         }}
       >
-        <Contactless fontSize="small" />
-        <Typography variant="h6" sx={{ fontWeight: 700 }}>
-          Realizar Mediciones
-        </Typography>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+          <Contactless fontSize="small" />
+          <Typography variant="h6" sx={{ fontWeight: 700 }}>
+            Realizar Mediciones
+          </Typography>
+        </Box>
+
+        <Typography variant="h6">{new Date().toLocaleDateString()}</Typography>
       </Box>
 
       <Box sx={{ display: "flex", gap: 2, alignItems: "flex-start" }}>
@@ -242,7 +356,6 @@ export const Play = () => {
                 )}
               />
               <Divider />
-
               <TextField
                 label="Frecuencia"
                 disabled
@@ -269,7 +382,6 @@ export const Play = () => {
                   size="small"
                   value={configuracionSeleccionada?.funcion?.nombre ?? ""}
                 />
-
                 <TextField
                   label="Frecuencia Inicial"
                   disabled
@@ -288,7 +400,6 @@ export const Play = () => {
                   size="small"
                   value={configuracionSeleccionada?.frecuencia_cantidad ?? ""}
                 />
-
                 <TextField
                   label="Voltaje"
                   disabled
@@ -311,7 +422,7 @@ export const Play = () => {
             }}
           >
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              {isPlaying && !isPaused ? (
+              {corriendo && !pausado ? (
                 <CircularProgress size={22} />
               ) : (
                 <CheckCircle color="success" />
@@ -331,48 +442,53 @@ export const Play = () => {
                 color="success"
                 startIcon={<PlayArrow />}
                 onClick={handleIniciar}
-                disabled={isPlaying && !isPaused}
+                disabled={corriendo && !pausado}
               >
-                Iniciar
+                {pausado ? "Continuar" : "Iniciar"}
               </Button>
               <Button
                 variant="contained"
                 color="warning"
                 startIcon={<Pause />}
-                onClick={handleDetener}
-                disabled={!isPlaying}
+                onClick={handleTogglePause}
+                disabled={!corriendo && !pausado}
               >
-                Detener
+                {pausado ? "Reanudando..." : "Pausar"}
               </Button>
               <Button
                 variant="contained"
                 color="error"
                 startIcon={<Stop />}
                 onClick={handleParar}
-                disabled={!isPlaying && !isPaused}
+                disabled={!corriendo && !pausado && actual === 0}
               >
                 Parar
               </Button>
             </Box>
             <Box sx={{ flexGrow: 1 }} />
-            <Button
-              variant="contained"
-              color="success"
-              size="small"
-              startIcon={<SaveAlt />}
-              disabled={!actual}
-            >
-              Guardar
-            </Button>
-            <IconButton
-              size="small"
-              sx={{ border: "1px solid", borderColor: "grey.300" }}
-            >
-              X
-            </IconButton>
-            <Typography variant="caption">
-              {new Date().toLocaleDateString()}
-            </Typography>
+            <Tooltip title="Guardar Datos">
+              <Button
+                variant="contained"
+                color="success"
+                size="small"
+                startIcon={<SaveAlt />}
+                onClick={handleGuardar}
+                disabled={!actual}
+              >
+                Guardar
+              </Button>
+            </Tooltip>
+            <Tooltip title="Exportar a Excel">
+              <Button
+                variant="outlined"
+                color="success"
+                startIcon={<FileDownload />}
+                onClick={() => enviarExcel()}
+                disabled={!actual}
+              >
+                Excel
+              </Button>
+            </Tooltip>
           </Paper>
 
           <Paper sx={cardStyle}>
@@ -390,17 +506,22 @@ export const Play = () => {
               >{`Mediciones ${actual} / ${total}`}</Typography>
             </Box>
             <DataGrid
-              rows={medicionesLive}
+              rows={medicionesTomadas}
               columns={columns}
-              autoHeight
-              hideFooter
-              paginationModel={{ page: 0, pageSize: 100 }}
-              disableRowSelectionOnClick
-              density="compact"
+              initialState={{
+                pagination: { paginationModel: paginationModels },
+              }}
+              pageSizeOptions={[5, 10, 50, 100]}
+              checkboxSelection={false}
+              sx={{
+                width: "100%",
+                height: "100%",
+                border: 2,
+                borderColor: "#D9D9D9",
+                "& .MuiDataGrid-virtualScroller": { overflow: "auto" },
+              }}
             />
           </Paper>
-
-          {/* FIX del Stack: uso Box flex para evitar el error de overload */}
         </Box>
       </Box>
     </Box>

@@ -8,6 +8,9 @@ import {
   Select,
   TextField,
   useTheme,
+  FormControl,
+  InputLabel,
+  FormHelperText,
 } from "@mui/material";
 import type {
   Ibias,
@@ -33,7 +36,6 @@ export const ConfiguracionForm = ({ open, onClose, editState }: Props) => {
   const [isFocused, setIsFocused] = useState(false);
   const [inputStr, setInputStr] = useState("1.0000");
   const theme = useTheme();
-  //Leer
   const dispatch = useDispatch<AppDispatch>();
   const frecuencias = useSelector(
     (state: RootState) => state.frecuencia?.frecuencia || [],
@@ -44,7 +46,6 @@ export const ConfiguracionForm = ({ open, onClose, editState }: Props) => {
   );
   const user = useSelector((state: RootState) => state.auth.user);
 
-  // Hook useForm
   const inicialState = {
     frecuencia_id: frecuencias[0]?.id ?? 1,
     bias_id: biases[0]?.id ?? 1,
@@ -61,30 +62,28 @@ export const ConfiguracionForm = ({ open, onClose, editState }: Props) => {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<Iconfiguracion>({ defaultValues: inicialState });
+  } = useForm<Iconfiguracion>({ defaultValues: inicialState as any });
 
-  // Resetear el formulario con los valores de editState cuando cambia
   useEffect(() => {
     if (editState) {
-      reset(editState); // Resetea los valores del formulario con los de editState
+      reset(editState);
     } else {
-      reset(inicialState);
+      reset(inicialState as any);
     }
   }, [editState, reset]);
 
-  // Guardar (Agregar/Editar)
   const onSubmit = (data: Iconfiguracion) => {
-    delete data.frecuencia;
-    delete data.bias;
-    delete data.funcion;
-    delete data.usuario;
+    delete (data as any).frecuencia;
+    delete (data as any).bias;
+    delete (data as any).funcion;
+    delete (data as any).usuario;
     if (editState) {
       dispatch(
         put("configuracion", actionCreatorMap, data.id ?? 0, data, true, true),
       )
         .then(() => {
           toast.info("Elemento modificado");
-          reset(inicialState);
+          reset(inicialState as any);
           onClose();
         })
         .catch(() =>
@@ -94,7 +93,7 @@ export const ConfiguracionForm = ({ open, onClose, editState }: Props) => {
       dispatch(post("configuracion", actionCreatorMap, data, true, true))
         .then(() => {
           toast.success("Elemento agregado");
-          reset(inicialState);
+          reset(inicialState as any);
           onClose();
         })
         .catch(() =>
@@ -104,7 +103,7 @@ export const ConfiguracionForm = ({ open, onClose, editState }: Props) => {
   };
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle
         sx={{
           display: "flex",
@@ -119,8 +118,9 @@ export const ConfiguracionForm = ({ open, onClose, editState }: Props) => {
         {editState ? "Editar Configuración" : "Nueva Configuración"}
       </DialogTitle>
 
-      <DialogContent>
-        {/* Nombre */}
+      <DialogContent
+        sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 2, mt: 1 }}
+      >
         <Controller
           name="nombre"
           control={control}
@@ -137,82 +137,98 @@ export const ConfiguracionForm = ({ open, onClose, editState }: Props) => {
             />
           )}
         />
+
         {/* Frecuencia */}
         <Controller
           name="frecuencia_id"
           control={control}
           rules={{ required: "La frecuencia es obligatoria" }}
           render={({ field }) => (
-            <Select
-              {...field}
+            <FormControl
               fullWidth
               margin="dense"
-              value={field.value ?? ""}
-              onChange={(e) => field.onChange(Number(e.target.value))}
-              displayEmpty
-              sx={{ mt: 2 }}
+              error={!!errors.frecuencia_id}
             >
-              <MenuItem value="">
-                <em>Seleccione una frecuencia</em>
-              </MenuItem>
-              {frecuencias.map((frecuencia: Ifrecuencia) => (
-                <MenuItem key={frecuencia.id} value={frecuencia.id}>
-                  {frecuencia.nombre}
-                </MenuItem>
-              ))}
-            </Select>
+              <InputLabel id="label-frecuencia">Frecuencia</InputLabel>
+              <Select
+                {...field}
+                labelId="label-frecuencia"
+                label="Frecuencia"
+                value={field.value ?? ""}
+                onChange={(e) => field.onChange(Number(e.target.value))}
+              >
+                {frecuencias.map((frecuencia: Ifrecuencia) => (
+                  <MenuItem key={frecuencia.id} value={frecuencia.id}>
+                    {frecuencia.nombre}
+                  </MenuItem>
+                ))}
+              </Select>
+              {errors.frecuencia_id && (
+                <FormHelperText>
+                  {errors.frecuencia_id.message as string}
+                </FormHelperText>
+              )}
+            </FormControl>
           )}
         />
+
         {/* Bias */}
         <Controller
           name="bias_id"
           control={control}
           rules={{ required: "El bias es obligatorio" }}
           render={({ field }) => (
-            <Select
-              {...field}
-              fullWidth
-              margin="dense"
-              value={field.value ?? ""}
-              onChange={(e) => field.onChange(Number(e.target.value))}
-              displayEmpty
-              sx={{ mt: 2 }}
-            >
-              <MenuItem value="">
-                <em>Seleccione un bias</em>
-              </MenuItem>
-              {biases.map((bias: Ibias) => (
-                <MenuItem key={bias.id} value={bias.id}>
-                  {bias.valor}
-                </MenuItem>
-              ))}
-            </Select>
+            <FormControl fullWidth margin="dense" error={!!errors.bias_id}>
+              <InputLabel id="label-bias">Bias</InputLabel>
+              <Select
+                {...field}
+                labelId="label-bias"
+                label="Bias"
+                value={field.value ?? ""}
+                onChange={(e) => field.onChange(Number(e.target.value))}
+              >
+                {biases.map((bias: Ibias) => (
+                  <MenuItem key={bias.id} value={bias.id}>
+                    {bias.valor}
+                  </MenuItem>
+                ))}
+              </Select>
+              {errors.bias_id && (
+                <FormHelperText>
+                  {errors.bias_id.message as string}
+                </FormHelperText>
+              )}
+            </FormControl>
           )}
         />
+
         {/* Funcion */}
         <Controller
           name="funcion_id"
           control={control}
           rules={{ required: "La función es obligatoria" }}
           render={({ field }) => (
-            <Select
-              {...field}
-              fullWidth
-              margin="dense"
-              value={field.value ?? ""}
-              onChange={(e) => field.onChange(Number(e.target.value))}
-              displayEmpty
-              sx={{ mt: 2 }}
-            >
-              <MenuItem value="">
-                <em>Seleccione una función</em>
-              </MenuItem>
-              {funciones.map((funcion: Ifuncion) => (
-                <MenuItem key={funcion.id} value={funcion.id}>
-                  {funcion.nombre}
-                </MenuItem>
-              ))}
-            </Select>
+            <FormControl fullWidth margin="dense" error={!!errors.funcion_id}>
+              <InputLabel id="label-funcion">Función</InputLabel>
+              <Select
+                {...field}
+                labelId="label-funcion"
+                label="Función"
+                value={field.value ?? ""}
+                onChange={(e) => field.onChange(Number(e.target.value))}
+              >
+                {funciones.map((funcion: Ifuncion) => (
+                  <MenuItem key={funcion.id} value={funcion.id}>
+                    {funcion.nombre}
+                  </MenuItem>
+                ))}
+              </Select>
+              {errors.funcion_id && (
+                <FormHelperText>
+                  {errors.funcion_id.message as string}
+                </FormHelperText>
+              )}
+            </FormControl>
           )}
         />
 
@@ -224,14 +240,12 @@ export const ConfiguracionForm = ({ open, onClose, editState }: Props) => {
           render={({ field }) => (
             <TextField
               {...field}
-              autoFocus
               type="number"
               margin="dense"
               label="Frecuencia inicial"
               fullWidth
               error={!!errors.frecuencia_inicial}
               helperText={errors.frecuencia_inicial?.message}
-              sx={{ mt: 2 }}
             />
           )}
         />
@@ -243,14 +257,12 @@ export const ConfiguracionForm = ({ open, onClose, editState }: Props) => {
           render={({ field }) => (
             <TextField
               {...field}
-              autoFocus
               type="number"
               margin="dense"
               label="Frecuencia cantidad"
               fullWidth
               error={!!errors.frecuencia_cantidad}
               helperText={errors.frecuencia_cantidad?.message}
-              sx={{ mt: 2 }}
             />
           )}
         />
@@ -262,14 +274,12 @@ export const ConfiguracionForm = ({ open, onClose, editState }: Props) => {
           render={({ field }) => (
             <TextField
               {...field}
-              autoFocus
               type="number"
               margin="dense"
               label="Frecuencia final"
               fullWidth
               error={!!errors.frecuencia_final}
               helperText={errors.frecuencia_final?.message}
-              sx={{ mt: 2 }}
             />
           )}
         />
@@ -287,9 +297,12 @@ export const ConfiguracionForm = ({ open, onClose, editState }: Props) => {
           }}
           render={({ field }) => (
             <TextField
-              // ...
-              label="Valor"
-              placeholder="3.5000" // antes 3.50
+              label="Voltaje"
+              margin="dense"
+              fullWidth
+              placeholder="3.5000"
+              error={!!errors.voltaje}
+              helperText={errors.voltaje?.message as string}
               value={isFocused ? inputStr : Number(field.value ?? 0).toFixed(4)}
               onFocus={() => {
                 setIsFocused(true);
@@ -307,11 +320,8 @@ export const ConfiguracionForm = ({ open, onClose, editState }: Props) => {
               }}
               onChange={(e) => {
                 let raw = e.target.value.replace(",", ".");
-
-                // permite hasta 4 decimales
                 if (raw === "" || raw === "." || /^\d*\.?\d{0,4}$/.test(raw)) {
                   setInputStr(e.target.value);
-
                   if (raw !== "" && raw !== ".") {
                     const num = parseFloat(raw);
                     if (!isNaN(num) && num >= 0 && num <= 999999.9999) {
@@ -320,7 +330,6 @@ export const ConfiguracionForm = ({ open, onClose, editState }: Props) => {
                   }
                 }
               }}
-              sx={{ mt: 2 }}
             />
           )}
         />

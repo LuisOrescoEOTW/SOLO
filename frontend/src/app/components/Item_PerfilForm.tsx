@@ -9,6 +9,9 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControl,
+  FormHelperText,
+  InputLabel,
   MenuItem,
   Select,
   TextField,
@@ -17,6 +20,7 @@ import {
 import { post, putCompuesto } from "../../redux/slices/thunks";
 import { actionCreatorMap } from "../../redux/actionCreatorMap";
 import type { Iitem_perfil } from "../models/Iitem_perfil";
+import type { Iperfil } from "../models/Iperfil";
 
 interface Props {
   open: boolean;
@@ -114,31 +118,32 @@ export const Item_PerfilForm = ({ open, onClose, editState }: Props) => {
               control={control}
               rules={{ required: "El perfil es obligatorio" }}
               render={({ field }) => (
-                <Select
-                  {...field}
+                <FormControl
                   fullWidth
                   margin="dense"
-                  value={field.value ?? ""}
-                  onChange={(e) => field.onChange(Number(e.target.value))}
-                  displayEmpty
+                  error={!!errors.perfil_id}
                   sx={{ mt: 2 }}
                 >
-                  <MenuItem value="">
-                    <em>Seleccione un perfil</em>
-                  </MenuItem>
-                  {perfiles.map((perfil) => (
-                    <MenuItem key={perfil.id} value={perfil.id}>
-                      {perfil.nombre}
-                    </MenuItem>
-                  ))}
-                </Select>
+                  <InputLabel id="label-perfil">Perfil</InputLabel>
+                  <Select
+                    {...field}
+                    labelId="label-perfil"
+                    label="Perfil"
+                    value={field.value ?? ""}
+                    onChange={(e) => field.onChange(Number(e.target.value))}
+                  >
+                    {perfiles.map((perfil: Iperfil) => (
+                      <MenuItem key={perfil.id} value={perfil.id}>
+                        {perfil.nombre}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  {errors.perfil_id && (
+                    <FormHelperText>{errors.perfil_id.message}</FormHelperText>
+                  )}
+                </FormControl>
               )}
             />
-            {errors.perfil_id && (
-              <p style={{ color: "red", fontSize: "0.8rem" }}>
-                {errors.perfil_id.message}
-              </p>
-            )}
 
             {/* Item */}
             <Controller
@@ -146,31 +151,32 @@ export const Item_PerfilForm = ({ open, onClose, editState }: Props) => {
               control={control}
               rules={{ required: "El item es obligatorio" }}
               render={({ field }) => (
-                <Select
-                  {...field}
+                <FormControl
                   fullWidth
                   margin="dense"
-                  value={field.value ?? ""}
-                  onChange={(e) => field.onChange(Number(e.target.value))}
-                  displayEmpty
+                  error={!!errors.item_id}
                   sx={{ mt: 2 }}
                 >
-                  <MenuItem value="">
-                    <em>Seleccione un item</em>
-                  </MenuItem>
-                  {items.map((item) => (
-                    <MenuItem key={item.id} value={item.id}>
-                      {item.nombre}
-                    </MenuItem>
-                  ))}
-                </Select>
+                  <InputLabel id="label-item">Item</InputLabel>
+                  <Select
+                    {...field}
+                    labelId="label-item"
+                    label="Item"
+                    value={field.value ?? ""}
+                    onChange={(e) => field.onChange(Number(e.target.value))}
+                  >
+                    {items.map((item) => (
+                      <MenuItem key={item.id} value={item.id}>
+                        {item.nombre}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  {errors.item_id && (
+                    <FormHelperText>{errors.item_id.message}</FormHelperText>
+                  )}
+                </FormControl>
               )}
             />
-            {errors.item_id && (
-              <p style={{ color: "red", fontSize: "0.8rem" }}>
-                {errors.item_id.message}
-              </p>
-            )}
 
             {/* Nivel */}
             <Controller

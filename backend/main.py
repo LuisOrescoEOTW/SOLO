@@ -11,6 +11,7 @@ from typing import cast
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
 from auth import hash_password, verify_password, create_access_token, get_current_user
+from typing import List
 
 load_dotenv()
 FRONTEND_URL = os.getenv("FRONTEND_URL","")
@@ -215,6 +216,29 @@ def obtener_por_id(tabla: str, id: int, db: Session = Depends(get_db), current_u
     return CRUDBase(get_model(tabla)).get_by_id(db, id)
 
 # --- ABM ---
+@app.post("/{tabla}/masivo/")
+def crear_masivo(
+    tabla: str, 
+    registros: List[dict], 
+    db: Session = Depends(get_db), 
+    current_user: dict = Depends(get_current_user)
+):
+    model = get_model(tabla)
+    schema_cls = get_schema(tabla)
+    if not registros:
+        raise HTTPException(400, "Arreglo vacío")
+    objs_validados = []
+    errores = []
+    for i, reg in enumerate(registros):
+        try:
+            objs_validados.append(schema_cls(**reg))
+        except Exception as e:
+            errores.append({"index": i, "data": reg, "error": str(e)})
+    if errores:
+        raise HTTPException(422, {"message": "Errores de validación", "errores": errores})
+    resultado = CRUDBase(model).create_many(db, objs_validados)
+    return {"creados": len(resultado), "data": resultado}
+
 @app.post("/{tabla}/")
 def crear(tabla: str, registro: dict, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
     return CRUDBase(get_model(tabla)).create(db, get_schema(tabla)(**registro))

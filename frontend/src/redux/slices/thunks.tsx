@@ -106,6 +106,28 @@ export const post = (
   };
 };
 
+//Insertar Varios Nuevo
+// nombre de la tabla, actionCreatorMap, dato a enviar, hacer get, get con relaciones o no
+export const multipost = (
+  tabla: any,
+  actionCreatorMap: any,
+  data: any,
+  hacerget: boolean,
+  relaciones: boolean,
+) => {
+  return async (dispatch: AppDispatch) => {
+    const response = await Api.post(`/${tabla}/masivo/`, data);
+    if (hacerget) {
+      if (relaciones) {
+        await dispatch(getAllRelaciones(tabla, actionCreatorMap));
+      } else {
+        await dispatch(getAll(tabla, actionCreatorMap));
+      }
+    }
+    return response.data;
+  };
+};
+
 //Modificar
 export const put = (
   tabla: any,

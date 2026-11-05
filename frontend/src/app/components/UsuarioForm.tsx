@@ -10,6 +10,9 @@ import {
   DialogContent,
   DialogTitle,
   Fab,
+  FormControl,
+  FormHelperText,
+  InputLabel,
   MenuItem,
   Select,
   TextField,
@@ -141,24 +144,6 @@ export const UsuarioForm = ({ open, onClose, editState }: Props) => {
             />
           )}
         />
-
-        {/* Bloqueado */}
-        {/* <Controller
-          name="bloqueado"
-          control={control}
-          render={({ field }) => (
-            <FormControlLabel
-              label="Bloqueado"
-              control={
-                <Switch
-                  checked={field.value ?? false}
-                  onChange={(e) => field.onChange(e.target.checked)}
-                />
-              }
-            />
-          )}
-        /> */}
-
         {/* Email */}
         <Controller
           name="email"
@@ -217,31 +202,32 @@ export const UsuarioForm = ({ open, onClose, editState }: Props) => {
           control={control}
           rules={{ required: "El perfil es obligatorio" }}
           render={({ field }) => (
-            <Select
-              {...field}
+            <FormControl
               fullWidth
               margin="dense"
-              value={field.value ?? ""}
-              onChange={(e) => field.onChange(Number(e.target.value))}
-              displayEmpty
+              error={!!errors.perfil_id}
               sx={{ mt: 2 }}
             >
-              <MenuItem value="">
-                <em>Seleccione un perfil</em>
-              </MenuItem>
-              {perfiles.map((perfil: Iperfil) => (
-                <MenuItem key={perfil.id} value={perfil.id}>
-                  {perfil.nombre}
-                </MenuItem>
-              ))}
-            </Select>
+              <InputLabel id="label-perfil">Perfil</InputLabel>
+              <Select
+                {...field}
+                labelId="label-perfil"
+                label="Perfil"
+                value={field.value ?? ""}
+                onChange={(e) => field.onChange(Number(e.target.value))}
+              >
+                {perfiles.map((perfil: Iperfil) => (
+                  <MenuItem key={perfil.id} value={perfil.id}>
+                    {perfil.nombre}
+                  </MenuItem>
+                ))}
+              </Select>
+              {errors.perfil_id && (
+                <FormHelperText>{errors.perfil_id.message}</FormHelperText>
+              )}
+            </FormControl>
           )}
         />
-        {errors.perfil_id && (
-          <p style={{ color: "red", fontSize: "0.8rem" }}>
-            {errors.perfil_id.message}
-          </p>
-        )}
 
         {/* Foto */}
         <input

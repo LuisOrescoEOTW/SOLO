@@ -4,6 +4,9 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControl,
+  FormHelperText,
+  InputLabel,
   MenuItem,
   Select,
   TextField,
@@ -107,24 +110,30 @@ export const Pin_GpioForm = ({ open, onClose, editState }: Props) => {
           control={control}
           rules={{ required: "El selector es obligatorio" }}
           render={({ field }) => (
-            <Select
-              {...field}
+            <FormControl
               fullWidth
               margin="dense"
-              value={field.value ?? ""}
-              onChange={(e) => field.onChange(Number(e.target.value))}
-              displayEmpty
+              error={!!errors.selector_id}
               sx={{ mt: 2 }}
             >
-              <MenuItem value="">
-                <em>Seleccione un selector</em>
-              </MenuItem>
-              {selectores.map((selector: Iselector) => (
-                <MenuItem key={selector.id} value={selector.id}>
-                  {selector.nombre}
-                </MenuItem>
-              ))}
-            </Select>
+              <InputLabel id="label-selector">Selector</InputLabel>
+              <Select
+                {...field}
+                labelId="label-selector"
+                label="Selector"
+                value={field.value ?? ""}
+                onChange={(e) => field.onChange(Number(e.target.value))}
+              >
+                {selectores.map((selector) => (
+                  <MenuItem key={selector.id} value={selector.id}>
+                    {selector.nombre}
+                  </MenuItem>
+                ))}
+              </Select>
+              {errors.selector_id && (
+                <FormHelperText>{errors.selector_id.message}</FormHelperText>
+              )}
+            </FormControl>
           )}
         />
         {/* Pin MS */}

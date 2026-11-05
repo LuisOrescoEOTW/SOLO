@@ -2,6 +2,7 @@ from fastapi import HTTPException
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session, joinedload, with_loader_criteria
 from sqlalchemy import inspect
+from typing import List
 
 RELACIONES_POR_TABLA = {
     "canal": ["metodo"],
@@ -13,7 +14,6 @@ RELACIONES_POR_TABLA = {
     "item_perfil": ["item", "perfil"],
 }
 
-# Tablas con PK compuesta
 PK_COMPUESTA = {
     "selector_configuracion": ["selector_id", "configuracion_id"],
     "item_perfil": ["item_id", "perfil_id"]
@@ -24,7 +24,6 @@ class CRUDBase:
         self.model = model
 
     def _get_pk_columns(self):
-        # Devuelve lista de columnas PK: ["id"] o ["selector_id","configuracion_id"]
         tablename = self.model.__tablename__
         if tablename in PK_COMPUESTA:
             return PK_COMPUESTA[tablename]
@@ -38,7 +37,6 @@ class CRUDBase:
         if len(cols) == 1:
             return getattr(self.model, cols[0]) == pk1
         else:
-            # compuesta
             if pk2 is None:
                 raise HTTPException(400, f"La tabla {self.model.__tablename__} necesita 2 ids: /{cols[0]}/{cols[1]}/")
             return (getattr(self.model, cols[0]) == pk1) & (getattr(self.model, cols[1]) == pk2)
@@ -64,16 +62,29 @@ class CRUDBase:
             if opts: query = query.options(*opts)
         return query
 
+    def _aplicar_orden_default(self, query):
+        if hasattr(self.model, "nombre"):
+            return query.order_by(getattr(self.model, "nombre").asc())
+        else:
+            # si no tiene nombre, ordena por PK (id o pk compuesta)
+            for col_name in self._get_pk_columns():
+                query = query.order_by(getattr(self.model, col_name).asc())
+            return query
+
     def _validar_campo(self, campo: str):
         if not hasattr(self.model, campo):
             raise HTTPException(400, f"El campo '{campo}' no existe en {self.model.__tablename__}")
 
     # --- GET ---
     def get_all(self, db: Session):
-        return self._base_query(db, False).all()
+        query = self._base_query(db, False)
+        query = self._aplicar_orden_default(query)
+        return query.all()
 
     def get_all_relaciones(self, db: Session):
-        return self._base_query(db, True).all()
+        query = self._base_query(db, True)
+        query = self._aplicar_orden_default(query)
+        return query.all()
 
     def get_by_id(self, db: Session, id: int):
         if self._es_compuesta():
@@ -96,11 +107,15 @@ class CRUDBase:
 
     def get_by_campo_y_id(self, db: Session, campo: str, item):
         self._validar_campo(campo)
-        return self._base_query(db, False).filter(getattr(self.model, campo) == item).all()
+        query = self._base_query(db, False).filter(getattr(self.model, campo) == item)
+        query = self._aplicar_orden_default(query)
+        return query.all()
 
     def get_by_campo_y_id_relaciones(self, db: Session, campo: str, item):
         self._validar_campo(campo)
-        return self._base_query(db, True).filter(getattr(self.model, campo) == item).all()
+        query = self._base_query(db, True).filter(getattr(self.model, campo) == item)
+        query = self._aplicar_orden_default(query)
+        return query.all()
 
     # --- ABM ---
     def create(self, db: Session, obj_in):
@@ -111,6 +126,27 @@ class CRUDBase:
         except IntegrityError as e:
             db.rollback()
             raise HTTPException(400, f"No fue posible guardar: {str(e.orig)}")
+
+    def create_many(self, db: Session, objs_in: List):
+        creados = []
+        try:
+            relaciones = RELACIONES_POR_TABLA.get(self.model.__tablename__, [])
+            for obj_in in objs_in:
+                data = obj_in.model_dump(exclude_unset=True, exclude_none=True)
+                for rel in relaciones:
+                    data.pop(rel, None)
+                if 'id' in data and not data['id']:
+                    data.pop('id')
+                nuevo = self.model(**data)
+                db.add(nuevo)
+                creados.append(nuevo)
+            db.commit()
+            for c in creados:
+                db.refresh(c)
+            return creados
+        except IntegrityError as e:
+            db.rollback()
+            raise HTTPException(400, f"Error en carga masiva: {str(e.orig)}")
 
     def update(self, db: Session, id: int, obj_in):
         if self._es_compuesta(): raise HTTPException(400, "Usá update compuesto")

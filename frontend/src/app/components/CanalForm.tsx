@@ -4,7 +4,10 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControl,
   FormControlLabel,
+  FormHelperText,
+  InputLabel,
   MenuItem,
   Select,
   Switch,
@@ -77,7 +80,7 @@ export const CanalForm = ({ open, onClose, editState }: Props) => {
         .then(() => {
           toast.success("Elemento agregado");
           // reset(inicialState);
-          // onClose();
+          onClose();
         })
         .catch(() =>
           toast.error("Error al agregar el elemento. Posible duplicado"),
@@ -108,24 +111,30 @@ export const CanalForm = ({ open, onClose, editState }: Props) => {
           control={control}
           rules={{ required: "El método es obligatorio" }}
           render={({ field }) => (
-            <Select
-              {...field}
+            <FormControl
               fullWidth
               margin="dense"
-              value={field.value ?? ""}
-              onChange={(e) => field.onChange(Number(e.target.value))}
-              displayEmpty
+              error={!!errors.metodo_id}
               sx={{ mt: 2 }}
             >
-              <MenuItem value="">
-                <em>Seleccione un método</em>
-              </MenuItem>
-              {metodos.map((metodo: Imetodo) => (
-                <MenuItem key={metodo.id} value={metodo.id}>
-                  {metodo.nombre}
-                </MenuItem>
-              ))}
-            </Select>
+              <InputLabel id="label-metodo">Método</InputLabel>
+              <Select
+                {...field}
+                labelId="label-metodo"
+                label="Método"
+                value={field.value ?? ""}
+                onChange={(e) => field.onChange(Number(e.target.value))}
+              >
+                {metodos.map((metodo) => (
+                  <MenuItem key={metodo.id} value={metodo.id}>
+                    {metodo.nombre}
+                  </MenuItem>
+                ))}
+              </Select>
+              {errors.metodo_id && (
+                <FormHelperText>{errors.metodo_id.message}</FormHelperText>
+              )}
+            </FormControl>
           )}
         />
         {/* Nombre */}
